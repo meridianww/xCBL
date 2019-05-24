@@ -1,0 +1,17 @@
+C:\M4PL_Project\XCBL_Codebase\XCBL.SoapWebService.Phase2\xCBLSoapWebService\bin\xCBLSoapWebService.dll.config
+C:\M4PL_Project\XCBL_Codebase\XCBL.SoapWebService.Phase2\xCBLSoapWebService\bin\xCBLSoapWebService.dll
+C:\M4PL_Project\XCBL_Codebase\XCBL.SoapWebService.Phase2\xCBLSoapWebService\bin\xCBLSoapWebService.pdb
+C:\M4PL_Project\XCBL_Codebase\XCBL.SoapWebService.Phase2\xCBLSoapWebService\obj\Debug\xCBLSoapWebService.dll
+C:\M4PL_Project\XCBL_Codebase\XCBL.SoapWebService.Phase2\xCBLSoapWebService\obj\Debug\xCBLSoapWebService.pdb
+C:\DreamOrbit\XCBL\Projects\XCBL.SoapWebService.Phase2\xCBLSoapWebService\bin\xCBLSoapWebService.dll.config
+C:\DreamOrbit\XCBL\Projects\XCBL.SoapWebService.Phase2\xCBLSoapWebService\bin\xCBLSoapWebService.dll
+C:\DreamOrbit\XCBL\Projects\XCBL.SoapWebService.Phase2\xCBLSoapWebService\bin\xCBLSoapWebService.pdb
+C:\DreamOrbit\XCBL\Projects\XCBL.SoapWebService.Phase2\xCBLSoapWebService\obj\Debug\xCBLSoapWebService.dll
+C:\DreamOrbit\XCBL\Projects\XCBL.SoapWebService.Phase2\xCBLSoapWebService\obj\Debug\xCBLSoapWebService.pdb
+C:\DreamOrbit\XCBL\Projects\XCBL.SoapWebService.Phase2\xCBLSoapWebService\obj\Debug\xCBLSoapWebService.csprojResolveAssemblyReference.cache
+C:\DreamOrbit\M4PL\xCBL\XCBL.SoapWebService.Phase2\xCBLSoapWebService\bin\xCBLSoapWebService.dll.config
+C:\DreamOrbit\M4PL\xCBL\XCBL.SoapWebService.Phase2\xCBLSoapWebService\bin\xCBLSoapWebService.dll
+C:\DreamOrbit\M4PL\xCBL\XCBL.SoapWebService.Phase2\xCBLSoapWebService\bin\xCBLSoapWebService.pdb
+C:\DreamOrbit\M4PL\xCBL\XCBL.SoapWebService.Phase2\xCBLSoapWebService\obj\Debug\xCBLSoapWebService.csprojResolveAssemblyReference.cache
+C:\DreamOrbit\M4PL\xCBL\XCBL.SoapWebService.Phase2\xCBLSoapWebService\obj\Debug\xCBLSoapWebService.dll
+C:\DreamOrbit\M4PL\xCBL\XCBL.SoapWebService.Phase2\xCBLSoapWebService\obj\Debug\xCBLSoapWebService.pdb

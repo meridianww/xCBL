@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <_PublishTargetUrl>C:\Users\akhil.chauhan\Desktop\xCBLService</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>01/28/2016 11:17:49</publishTime>
+    </File>
+    <File Include="bin/XCBL.WebService.dll">
+      <publishTime>06/20/2016 16:20:13</publishTime>
+    </File>
+    <File Include="bin/xCBLSoapWebService.dll">
+      <publishTime>08/31/2018 23:31:31</publishTime>
+    </File>
+    <File Include="MeridianService.svc">
+      <publishTime>07/19/2018 09:12:10</publishTime>
+    </File>
+    <File Include="packages.config">
+      <publishTime>01/28/2016 11:17:51</publishTime>
+    </File>
+    <File Include="PrecompiledApp.config">
+      <publishTime>01/08/2016 14:05:36</publishTime>
+    </File>
+    <File Include="Service1.svc">
+      <publishTime>12/09/2015 13:40:05</publishTime>
+    </File>
+    <File Include="WCBL Web - PROD.config">
+      <publishTime>07/19/2018 09:12:09</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>08/31/2018 23:11:48</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
