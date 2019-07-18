@@ -58,7 +58,7 @@
         public string ShippingInstruction
         {
             get { return _shippingInstruction; }
-            set { _shippingInstruction = value?.Substring(0, 50); }
+            set { _shippingInstruction = value.Length > 50 ? value.Substring(0, 50) : value; }
         }
 
         public string GPSSystem { get; set; }
