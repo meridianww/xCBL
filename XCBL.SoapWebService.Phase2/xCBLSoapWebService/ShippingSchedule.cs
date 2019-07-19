@@ -52,15 +52,7 @@
         public string ContactNumber_4 { get; set; }
         public string ContactNumber_5 { get; set; }
         public string ContactNumber_6 { get; set; }
-
-        private string _shippingInstruction;
-
-        public string ShippingInstruction
-        {
-            get { return _shippingInstruction; }
-            set { _shippingInstruction = value.Length > 50 ? value.Substring(0, 50) : value; }
-        }
-
+        public string ShippingInstruction { get; set; }
         public string GPSSystem { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }

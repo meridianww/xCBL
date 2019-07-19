@@ -439,7 +439,7 @@ namespace xCBLSoapWebService
         /// The function which replaces the special characters (Comma, Carriage return and Line Feed) to space found in the xml String
         /// </summary>
         /// <param name="value">Xml Data</param>
-        public static string ReplaceSpecialCharsWithSpace(this string value)
+        public static string ReplaceSpecialCharsWithSpace(this string value, bool isDoubleQuoatCheck = true)
         {
             try
             {
@@ -448,7 +448,7 @@ namespace xCBLSoapWebService
                     char charLineFeed = (char)10;
                     char charCarriageReturn = (char)13;
                     char charComma = (char)44;
-
+                    char charDoubleQuoat = (char)34;
                     if (value.IndexOf(charCarriageReturn) != -1)
                         value = value.Replace(charCarriageReturn.ToString(), " ");
 
@@ -457,6 +457,9 @@ namespace xCBLSoapWebService
 
                     if (value.IndexOf(charComma) != -1)
                         value = value.Replace(charComma.ToString(), " ");
+
+                    if (isDoubleQuoatCheck && value.IndexOf(charDoubleQuoat) != -1)
+                        value = value.Replace(charDoubleQuoat.ToString(), string.Empty);
                 }
                 return value;
             }

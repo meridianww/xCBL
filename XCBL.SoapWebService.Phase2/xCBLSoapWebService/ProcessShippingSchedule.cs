@@ -98,7 +98,7 @@ namespace xCBLSoapWebService
         /// <returns>List of process data</returns>
         private ProcessData ValidateScheduleShippingXmlDocument(RequestContext requestContext, XCBL_User xCblServiceUser)
         {
-            var requestMessage = requestContext.RequestMessage.ToString().ReplaceSpecialCharsWithSpace();
+            var requestMessage = requestContext.RequestMessage.ToString().ReplaceSpecialCharsWithSpace(false);
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(requestMessage);
 
@@ -125,7 +125,7 @@ namespace xCBLSoapWebService
                     var processData = xCblServiceUser.GetNewProcessData();
                     processData.XmlDocument = xmlDoc;
                     _meridianResult.XmlDocument = xmlDoc;
-
+                    
                     var scheduleId = element.GetNodeByNameAndLogErrorTrans(xmlNsManager, MeridianGlobalConstants.XCBL_SCHEDULE_ID, "03", processData, processData.ScheduleID);
                     var scheduleIssuedDate = element.GetNodeByNameAndInnerTextLogWarningTrans(xmlNsManager, MeridianGlobalConstants.XCBL_SCHEDULE_ISSUED_DATE, "01", processData, processData.ScheduleID);
 
