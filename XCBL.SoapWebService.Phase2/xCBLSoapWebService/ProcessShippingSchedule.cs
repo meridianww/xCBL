@@ -31,7 +31,8 @@ namespace xCBLSoapWebService
             if (CommonProcess.IsAuthenticatedRequest(currentOperationContext, ref xCblServiceUser))
             {
                 MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername, "IsAuthenticatedRequest", "01.02", "Success - Authenticated request", "Shipping Schedule Process", "No FileName", "No Schedule ID", "No Order Number", null, "Success");
-                ProcessData processData = ProcessRequestAndCreateFiles(currentOperationContext, xCblServiceUser);
+                bool isRejected = false;
+                ProcessData processData = ProcessRequestAndCreateFiles(currentOperationContext, xCblServiceUser, out isRejected);
                 if (processData == null || string.IsNullOrEmpty(processData.ScheduleID) || string.IsNullOrEmpty(processData.OrderNumber))
                     _meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
                 else
@@ -45,8 +46,16 @@ namespace xCBLSoapWebService
                     _meridianResult.WebPassword = xCblServiceUser.WebPassword;
                     _meridianResult.WebHashKey = xCblServiceUser.Hashkey;
 
-                    if (!CreateLocalCsvFile(processData))
-                        _meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
+                    if (!isRejected)
+                    {
+                        if (!CreateLocalCsvFile(processData))
+                            _meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
+                    }
+                    else
+                    {
+                        _meridianResult.IsPastDate = true;
+                        _meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS;
+                    }
                     _meridianResult.UniqueID = processData.ScheduleID;
                     return _meridianResult;
                 }
@@ -64,8 +73,9 @@ namespace xCBLSoapWebService
         /// </summary>
         /// <param name="operationContext">Current OperationContext</param>
         /// <returns></returns>
-        private ProcessData ProcessRequestAndCreateFiles(OperationContext operationContext, XCBL_User xCblServiceUser)
+        private ProcessData ProcessRequestAndCreateFiles(OperationContext operationContext, XCBL_User xCblServiceUser, out bool checkIsRejected)
         {
+            checkIsRejected = false;
             try
             {
                 ProcessData processData = ValidateScheduleShippingXmlDocument(operationContext.RequestContext, xCblServiceUser);
@@ -74,7 +84,7 @@ namespace xCBLSoapWebService
                    && !string.IsNullOrEmpty(processData.CsvFileName))
                 {
                     MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername, "ProcessRequestAndCreateFiles", "01.03", string.Format("Success - Parsed requested xml for CSV file {0}", processData.ScheduleID), "Shipping Schedule Process", processData.CsvFileName, processData.ScheduleID, processData.OrderNumber, processData.XmlDocument, "Success");
-                    if (UsePBSServiceDataAndUpdateFlags(processData))
+                    if (UsePBSServiceDataAndUpdateFlags(processData, out checkIsRejected))
                         return processData;
                     else
                         return null;
@@ -125,7 +135,7 @@ namespace xCBLSoapWebService
                     var processData = xCblServiceUser.GetNewProcessData();
                     processData.XmlDocument = xmlDoc;
                     _meridianResult.XmlDocument = xmlDoc;
-                    
+
                     var scheduleId = element.GetNodeByNameAndLogErrorTrans(xmlNsManager, MeridianGlobalConstants.XCBL_SCHEDULE_ID, "03", processData, processData.ScheduleID);
                     var scheduleIssuedDate = element.GetNodeByNameAndInnerTextLogWarningTrans(xmlNsManager, MeridianGlobalConstants.XCBL_SCHEDULE_ISSUED_DATE, "01", processData, processData.ScheduleID);
 
@@ -387,7 +397,7 @@ namespace xCBLSoapWebService
                        processData.ShippingSchedule.Other_FirstStop, processData.ShippingSchedule.Other_Before7, processData.ShippingSchedule.Other_Before9, processData.ShippingSchedule.Other_Before12, processData.ShippingSchedule.Other_SameDay, processData.ShippingSchedule.Other_OwnerOccupied, processData.ShippingSchedule.Other_7, processData.ShippingSchedule.Other_8, processData.ShippingSchedule.Other_9, processData.ShippingSchedule.Other_10,
                        processData.ShippingSchedule.PurposeCoded, processData.ShippingSchedule.ScheduleType, processData.ShippingSchedule.AgencyCoded, processData.ShippingSchedule.Name1, processData.ShippingSchedule.Street, processData.ShippingSchedule.StreetSupplement1, processData.ShippingSchedule.PostalCode, processData.ShippingSchedule.City, processData.ShippingSchedule.RegionCoded,
                        processData.ShippingSchedule.ContactName, processData.ShippingSchedule.ContactNumber_1, processData.ShippingSchedule.ContactNumber_2, processData.ShippingSchedule.ContactNumber_3, processData.ShippingSchedule.ContactNumber_4, processData.ShippingSchedule.ContactNumber_5, processData.ShippingSchedule.ContactNumber_6,
-                       processData.ShippingSchedule.ShippingInstruction, processData.ShippingSchedule.GPSSystem, processData.ShippingSchedule.Latitude.ToString(), processData.ShippingSchedule.Longitude.ToString(), 
+                       processData.ShippingSchedule.ShippingInstruction, processData.ShippingSchedule.GPSSystem, processData.ShippingSchedule.Latitude.ToString(), processData.ShippingSchedule.Longitude.ToString(),
                        processData.ShippingSchedule.LocationID, processData.ShippingSchedule.EstimatedArrivalDate, processData.ShippingSchedule.OrderType, initialResponse,
                        processData.ShippingSchedule.OrderNumber.ExtractNumberFromString());
                     StringBuilder strBuilder = new StringBuilder(MeridianGlobalConstants.CSV_HEADER_NAMES);
@@ -443,8 +453,9 @@ namespace xCBLSoapWebService
 
         #region Call PBS Web Service
 
-        private bool UsePBSServiceDataAndUpdateFlags(ProcessData processData)
+        private bool UsePBSServiceDataAndUpdateFlags(ProcessData processData, out bool isRejected)
         {
+            isRejected = false;
             bool result = false;
             try
             {
@@ -486,7 +497,17 @@ namespace xCBLSoapWebService
                 scheduledDeliveryDateInString = currentOrderDetails.DeliveryDate;
                 isScheduled = currentOrderDetails.IsScheduled;
 
-                if (!string.IsNullOrWhiteSpace(scheduledShipmentDateInString) && !string.IsNullOrWhiteSpace(orderNumber) && (processData.ShippingSchedule.OrderNumber.Trim().Equals(orderNumber.Trim(), StringComparison.OrdinalIgnoreCase)))
+                if (!string.IsNullOrEmpty(processData.ShippingSchedule.EstimatedArrivalDate) && !Convert.ToDateTime(processData.ShippingSchedule.EstimatedArrivalDate).VerifyDatetimeExpaire())
+                {
+                    isRejected = true;
+                    processData.ShippingSchedule.Rejected01 = _meridianResult.Rejected01 = MeridianGlobalConstants.XCBL_YES_FLAG;
+                    processData.ShippingSchedule.Comments = _meridianResult.Comments = MeridianGlobalConstants.XCBL_COMMENT_PAST_DUE_DATE;
+                    MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "UsePBSServiceDataAndUpdateFlags", "02.26",
+                        "Reject - Past Due Date from PBS WebService", string.Format("Reject - Past Due Date got for Order '{0}' from PBS WebService", processData.OrderNumber),
+                        processData.CsvFileName, processData.ScheduleID, processData.OrderNumber, null, "Reject 02.26");
+                }
+
+                else if (!string.IsNullOrWhiteSpace(scheduledShipmentDateInString) && !string.IsNullOrWhiteSpace(orderNumber) && (processData.ShippingSchedule.OrderNumber.Trim().Equals(orderNumber.Trim(), StringComparison.OrdinalIgnoreCase)))
                 {
 
                     #region XCBL Data
@@ -603,7 +624,6 @@ namespace xCBLSoapWebService
                     processData.ShippingSchedule.Comments = _meridianResult.Comments = MeridianGlobalConstants.XCBL_COMMENT_ORDER_NOT_FOUND;
                     MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "UsePBSServiceDataAndUpdateFlags", "02.24", "Warning - No Data from PBS WebService", string.Format("Warning - No data got for Order '{0}' from PBS WebService", processData.OrderNumber), processData.CsvFileName, processData.ScheduleID, processData.OrderNumber, null, "Warning 02.24");
                 }
-
                 result = true;
                 MeridianSystemLibrary.LogPBS(
                     processData.ScheduleID, processData.OrderNumber,
@@ -623,6 +643,12 @@ namespace xCBLSoapWebService
         }
 
         #endregion Call PBS Web Service
+
+        private bool LogPastDueDate(XCBL_User xCblServiceUser, ProcessData processData)
+        {
+
+            return false;
+        }
 
         #endregion Shipping Schedule Request
 

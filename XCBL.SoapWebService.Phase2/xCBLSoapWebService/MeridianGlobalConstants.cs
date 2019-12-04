@@ -85,6 +85,8 @@ namespace xCBLSoapWebService
         public const string XCBL_COMMENT_ORDER_NOT_FOUND = "Order Not Found";
         public const string XCBL_COMMENT_RECEIVED_INVALID_CODE_FROM_PBS = "Received Invalid Code From PBS";
 
+        public const string XCBL_COMMENT_PAST_DUE_DATE = "Past Due Date";
+
         //Prod Server config which needs to be uncommented for Production Release
         //public const String XCBL_DATABASE_SERVER_URL = "Server=edge.meridianww.com; DataBase = SYST010MeridianXCBLService; User Id = dev_connection; Password = Password88; Connection Timeout = 0";
 
@@ -116,6 +118,10 @@ namespace xCBLSoapWebService
         public const string MESSAGE_ACKNOWLEDGEMENT_REFERENCE_NUMBER_OPEN_TAG = "<AcknowledgementReferenceNumber>";
         // Need to include Schedule ID value in AcknowledgementReferenceNumber Tag
         public const string MESSAGE_ACKNOWLEDGEMENT_REFERENCE_NUMBER_CLOSE_TAG = "</AcknowledgementReferenceNumber>";
+
+        public const string MESSAGE_ACKNOWLEDGEMENT_COMMENT_OPEN_TAG = "<AcknowledgementReferenceComment>";
+        public const string MESSAGE_ACKNOWLEDGEMENT_COMMENT_CLOSE_TAG = "</AcknowledgementReferenceComment>";
+
         public const string MESSAGE_ACKNOWLEDGEMENT_NOTE_OPEN_TAG = "<AcknowledgementNote><Status>";
         // Need to include response value of Success or Failure in Status Tag
         public const string MESSAGE_ACKNOWLEDGEMENT_NOTE_CLOSE_TAG = "</Status></AcknowledgementNote>";
