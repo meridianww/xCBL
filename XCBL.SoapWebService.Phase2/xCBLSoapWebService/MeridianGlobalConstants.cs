@@ -133,8 +133,9 @@ namespace xCBLSoapWebService
                             ",Other_FirstStop,Other_Before7,Other_Before9,Other_Before12,Other_SameDay,Other_OwnerOccupied,Other_7,Other_8,Other_9,Other_10" +
                             ",PurposeCoded,ScheduleType,AgencyCoded,Name1,Street,Streetsupplement1,PostalCode,City,RegionCoded," +
                             "ContactName,ContactNumber_1,ContactNumber_2,ContactNumber_3,ContactNumber_4,ContactNumber_5,ContactNumber_6" +
-                            ",ShippingInstruction,GPSSystem,Latitude,Longitude,LocationID,EstimatedArrivalDate,OrderType,InitialResponse";
-        public const string CSV_HEADER_NAMES_FORMAT = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36},{37}";
+                            ",ShippingInstruction,GPSSystem,Latitude,Longitude,LocationID,EstimatedArrivalDate,OrderType,InitialResponse,NumericOrder";
+        public const string CSV_HEADER_NAMES_FORMAT = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},"
+            +"{27},{28},{29},{30},{31},{32},{33},{34},{35},{36},{37},{38}";
         public const string XCBL_SHIPPING_SCHEDULE_HEADER = "ShippingScheduleHeader";
         public const string XCBL_SCHEDULE_ID = "//default:ScheduleID";
         public const string XCBL_PURPOSE = "purpose";
@@ -210,10 +211,10 @@ namespace xCBLSoapWebService
                                                      "UOMCoded_Parts,UOMCodedOther_Parts,QuantityQualifierCoded_Parts,QuantityQualifierCodedOther_Parts,ShippingInstructions," +
                                                      "TransitDirectionCoded,TransitDirectionCodedOther,GPSSystem_StartTransportationLocation,Latitude_StartTransportationLocation," +
                                                      "Longitude_StartTransportationLocation,LocationID_StartTransportationLocation,GPSSystem_EndTransportationLocation," +
-                                                     "Latitude_EndTransportationLocation,Longitude_EndTransportationLocation,LocationID_EndTransportationLocation";
+                                                     "Latitude_EndTransportationLocation,Longitude_EndTransportationLocation,LocationID_EndTransportationLocation,NumericOrder";
         public const string REQUISITION_CSV_HEADER_NAMES_FORMAT = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23}," +
                                                             "{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36},{37},{38},{39},{40},{41},{42},{43},{44},{45}," +
-                                                            "{46},{47},{48},{49},{50}";
+                                                            "{46},{47},{48},{49},{50},{51}";
 
         public const string XCBL_REQUISITION_HEADER = "RequisitionHeader";
         public const string XCBL_Requisition_XML_Https = "tem1:Requisition";
@@ -334,8 +335,8 @@ namespace xCBLSoapWebService
                             ",Other_FirstStop,Other_Before7,Other_Before9,Other_Before12,Other_SameDay,Other_OwnerOccupied,Other_7,Other_8,Other_9,Other_10" +
                             ",PurposeCoded,ScheduleType,AgencyCoded,Name1,Street,Streetsupplement1,PostalCode,City,RegionCoded" +
                             ",ContactName,ContactNumber_1,ContactNumber_2,ContactNumber_3,ContactNumber_4,ContactNumber_5,ContactNumber_6" +
-                            ",ShippingInstruction,GPSSystem,Latitude,Longitude,LocationID,EstimatedArrivalDate,OrderType";
-        public const string SHIPPING_SCHEDULE_RESPONSE_CSV_HEADER_NAMES_FORMAT = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36},{37},{38},{39},{40},{41},{42}";
+                            ",ShippingInstruction,GPSSystem,Latitude,Longitude,LocationID,EstimatedArrivalDate,OrderType,NumericOrder";
+        public const string SHIPPING_SCHEDULE_RESPONSE_CSV_HEADER_NAMES_FORMAT = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36},{37},{38},{39},{40},{41},{42},{43}";
 
 
         #region Methods
