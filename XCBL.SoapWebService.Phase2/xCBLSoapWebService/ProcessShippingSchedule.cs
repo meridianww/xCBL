@@ -83,9 +83,12 @@ namespace xCBLSoapWebService
                     && !string.IsNullOrEmpty(processData.OrderNumber)
                    && !string.IsNullOrEmpty(processData.CsvFileName))
                 {
-                    MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername, "ProcessRequestAndCreateFiles", "01.03", string.Format("Success - Parsed requested xml for CSV file {0}", processData.ScheduleID), "Shipping Schedule Process", processData.CsvFileName, processData.ScheduleID, processData.OrderNumber, processData.XmlDocument, "Success");
                     if (UsePBSServiceDataAndUpdateFlags(processData, out checkIsRejected))
+                    {
+                        if(!checkIsRejected)
+                            MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername, "ProcessRequestAndCreateFiles", "01.03", string.Format("Success - Parsed requested xml for CSV file {0}", processData.ScheduleID), "Shipping Schedule Process", processData.CsvFileName, processData.ScheduleID, processData.OrderNumber, processData.XmlDocument, "Success");
                         return processData;
+                    }
                     else
                         return null;
                 }
@@ -504,7 +507,7 @@ namespace xCBLSoapWebService
                     processData.ShippingSchedule.Comments = _meridianResult.Comments = MeridianGlobalConstants.XCBL_COMMENT_PAST_DUE_DATE;
                     MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "UsePBSServiceDataAndUpdateFlags", "02.26",
                         "Reject - Past Due Date from PBS WebService", string.Format("Reject - Past Due Date got for Order '{0}' from PBS WebService", processData.OrderNumber),
-                        processData.CsvFileName, processData.ScheduleID, processData.OrderNumber, null, "Reject 02.26");
+                        null, processData.ScheduleID, processData.OrderNumber, processData.XmlDocument, "Reject 02.26");
                 }
 
                 else if (!string.IsNullOrWhiteSpace(scheduledShipmentDateInString) && !string.IsNullOrWhiteSpace(orderNumber) && (processData.ShippingSchedule.OrderNumber.Trim().Equals(orderNumber.Trim(), StringComparison.OrdinalIgnoreCase)))
