@@ -510,7 +510,9 @@ namespace xCBLSoapWebService
                         null, processData.ScheduleID, processData.OrderNumber, processData.XmlDocument, "Reject 02.26");
                 }
 
-                else if (!string.IsNullOrWhiteSpace(scheduledShipmentDateInString) && !string.IsNullOrWhiteSpace(orderNumber) && (processData.ShippingSchedule.OrderNumber.Trim().Equals(orderNumber.Trim(), StringComparison.OrdinalIgnoreCase)))
+                else if (!string.IsNullOrWhiteSpace(scheduledShipmentDateInString) 
+                    && !string.IsNullOrWhiteSpace(orderNumber) 
+                    && (processData.ShippingSchedule.OrderNumber.Trim().Equals(orderNumber.Trim(), StringComparison.OrdinalIgnoreCase)))
                 {
 
                     #region XCBL Data

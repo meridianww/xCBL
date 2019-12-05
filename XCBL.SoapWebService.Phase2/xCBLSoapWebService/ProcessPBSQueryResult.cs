@@ -95,7 +95,8 @@ namespace xCBLSoapWebService
 
             using (HttpClient client = new HttpClient())
             {
-                var sqlQuery = string.Format(MeridianGlobalConstants.PBS_WEB_SERVICE, MeridianGlobalConstants.PBS_WEB_SERVICE_QUERY, MeridianGlobalConstants.CONFIG_PBS_WEB_SERVICE_USER_NAME, MeridianGlobalConstants.CONFIG_PBS_WEB_SERVICE_PASSWORD);
+                var sqlQuery = string.Format(MeridianGlobalConstants.PBS_WEB_SERVICE, MeridianGlobalConstants.PBS_WEB_SERVICE_QUERY, MeridianGlobalConstants.CONFIG_PBS_WEB_SERVICE_USER_NAME, 
+                    MeridianGlobalConstants.CONFIG_PBS_WEB_SERVICE_PASSWORD);
                 var res = client.GetAsync(sqlQuery).Result;
                 var resultString = client.GetStringAsync(MeridianGlobalConstants.PBS_OUTPUT_FILE).Result;
 
@@ -130,24 +131,27 @@ namespace xCBLSoapWebService
                                         pbsData.DestinationPostalCode = values[30];
 
                                         if (!allLatestPBSOrders.ContainsKey(pbsData.OrderNumber))
-                                            allLatestPBSOrders.Add(pbsData.OrderNumber, pbsData);
+                                            allLatestPBSOrders.Add(pbsData.OrderNumber.Trim(), pbsData);
                                     }
                                 }
                                 else
                                 {
-                                    MeridianSystemLibrary.LogTransaction(null, null, "GetAllOrder", "02.25", "Warning - Values lenght less then 29", "Warning - Values lenght less then 29 from PBS WebService", null, null, null, null, "Warning 02.25 : Values lenght less then 29");
+                                    MeridianSystemLibrary.LogTransaction(null, null, "GetAllOrder", "02.25", "Warning - Values lenght less then 29", "Warning - Values lenght less then 29 from PBS WebService", 
+                                        null, null, null, null, "Warning 02.25 : Values lenght less then 29");
                                 }
                             }
                         }
                     }
                     else
                     {
-                        MeridianSystemLibrary.LogTransaction(null, null, "GetAllOrder", "02.26", "Warning - PBS File Lines Count < 2", "Warning - PBS File Lines Count < 2 from PBS WebService", null, null, null, null, "Warning 02.26 : PBS File Lines Count < 2");
+                        MeridianSystemLibrary.LogTransaction(null, null, "GetAllOrder", "02.26", "Warning - PBS File Lines Count < 2", "Warning - PBS File Lines Count < 2 from PBS WebService", null, 
+                            null, null, null, "Warning 02.26 : PBS File Lines Count < 2");
                     }
                 }
                 else
                 {
-                    MeridianSystemLibrary.LogTransaction(null, null, "GetAllOrder", "02.27", "Warning - Empty PBS text file", "Warning - Empty PBS text file from PBS WebService", null, null, null, null, "Warning 02.27 : Empty Text File");
+                    MeridianSystemLibrary.LogTransaction(null, null, "GetAllOrder", "02.27", "Warning - Empty PBS text file", "Warning - Empty PBS text file from PBS WebService", 
+                        null, null, null, null, "Warning 02.27 : Empty Text File");
                 }
             }
 
@@ -168,6 +172,6 @@ namespace xCBLSoapWebService
 
             AllPBSOrder = allLatestPBSOrders;
             IsProcessing = false;
-        }
+        } 
     }
 }
