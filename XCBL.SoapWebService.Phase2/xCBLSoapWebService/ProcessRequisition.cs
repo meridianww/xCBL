@@ -34,8 +34,8 @@ namespace xCBLSoapWebService
             if (CommonProcess.IsAuthenticatedRequest(currentOperationContext, ref xCblServiceUser))
             {
                 MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername, "IsAuthenticatedRequest", "01.02", "Success - Authenticated request", "Requisition Document Process", "No FileName", "No Requisition ID", "No Order Number", null, "Success");
-                bool isRejected = false;
-                ProcessData processData = ProcessRequisitionRequestAndCreateFiles(currentOperationContext, xCblServiceUser, out isRejected);
+                bool isCSVCreationRejected = false;
+                ProcessData processData = ProcessRequisitionRequestAndCreateFiles(currentOperationContext, xCblServiceUser, out isCSVCreationRejected);
                 if (processData == null || string.IsNullOrEmpty(processData.RequisitionID) || string.IsNullOrEmpty(processData.OrderNumber))
                     _meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
                 else
@@ -49,7 +49,7 @@ namespace xCBLSoapWebService
                     _meridianResult.WebPassword = xCblServiceUser.WebPassword;
                     _meridianResult.WebHashKey = xCblServiceUser.Hashkey;
 
-                    if (!isRejected)
+                    if (!isCSVCreationRejected)
                     {
                         if (!CreateLocalCsvFile(processData))
                             _meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
@@ -124,9 +124,9 @@ namespace xCBLSoapWebService
         /// </summary>
         /// <param name="operationContext">Current OperationContext</param>
         /// <returns></returns>
-        private ProcessData ProcessRequisitionRequestAndCreateFiles(OperationContext operationContext, XCBL_User xCblServiceUser, out bool checkIsRejected)
+        private ProcessData ProcessRequisitionRequestAndCreateFiles(OperationContext operationContext, XCBL_User xCblServiceUser, out bool checkIsCSVCreationRejected)
         {
-            checkIsRejected = false;
+            checkIsCSVCreationRejected = false;
             try
             {
                 ProcessData processData = ValidateRequisitionXmlDocument(operationContext.RequestContext, xCblServiceUser);
@@ -134,15 +134,33 @@ namespace xCBLSoapWebService
                     && !string.IsNullOrEmpty(processData.OrderNumber)
                    && !string.IsNullOrEmpty(processData.CsvFileName))
                 {
+                    if (MeridianGlobalConstants.CONFIG_TransitDirectionCodedOtherATDCAAIsRejectCSV.Equals(MeridianGlobalConstants.XCBL_YES_FLAG, StringComparison.OrdinalIgnoreCase))
+                    {
+                        bool transitDirectionCodedOtherFlag = string.IsNullOrEmpty(processData.Requisition.TransitDirectionCodedOther) ? true
+                            : (processData.Requisition.TransitDirectionCodedOther.ToUpper() == "ATD" || processData.Requisition.TransitDirectionCodedOther.ToUpper() == "CAA") ? false
+                            : true;
+
+                        if (!transitDirectionCodedOtherFlag)
+                        {
+                            checkIsCSVCreationRejected = true;
+                            MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "ProcessRequestAndCreateFiles", "02.27",
+                                "Reject - TransitDirectionCodedOther ATD/CAA Parsed requested xml for CSV file", string.Format("Reject - Past Due Date got for Order '{0}' Parsed requested xml for CSV file",
+                                processData.OrderNumber), null, processData.ScheduleID, processData.OrderNumber, processData.XmlDocument, "Reject 02.27");
+
+                            return processData;
+                        }
+                    }
+
                     if (!string.IsNullOrEmpty(processData.Requisition.RequestedShipByDate) && !Convert.ToDateTime(processData.Requisition.RequestedShipByDate).VerifyDatetimeExpaire())
                     {
-                        checkIsRejected = true;
+                        checkIsCSVCreationRejected = true;
                         MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "ProcessRequestAndCreateFiles", "02.26",
                        "Reject - Past Due Date Parsed requested xml for CSV file", string.Format("Reject - Past Due Date got for Order '{0}' Parsed requested xml for CSV file", processData.OrderNumber),
                        null, processData.ScheduleID, processData.OrderNumber, processData.XmlDocument, "Reject 02.26");
                     }
-                    if (!checkIsRejected)
+                    if (!checkIsCSVCreationRejected)
                         MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername, "ProcessRequestAndCreateFiles", "01.03", string.Format("Success - Parsed requested xml for CSV file {0}", processData.RequisitionID), "Requisition Document Process", processData.CsvFileName, processData.RequisitionID, processData.OrderNumber, processData.XmlDocument, "Success");
+
                     return processData;
                 }
             }

@@ -54,6 +54,8 @@ namespace xCBLSoapWebService
 
         public static readonly string CONFIG_AWC_CALL_SSR_REQUEST = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["AWCCallShippingScheduleResponseRequest"]);
 
+        public static readonly string CONFIG_TransitDirectionCodedOtherATDCAAIsRejectCSV = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["TransitDirectionCodedOtherATDCAAIsRejectCSV"]);
+
         public static readonly int TIMER_INTERVAL = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["TimerInterval"]);
 
         public static readonly int PBS_QUERY_FREQUENCY = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["PBSQueryFrequency"]);
