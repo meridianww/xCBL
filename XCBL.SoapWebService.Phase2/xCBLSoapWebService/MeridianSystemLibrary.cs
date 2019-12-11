@@ -471,22 +471,18 @@ namespace xCBLSoapWebService
             }
         }
 
-        public static string ExtractNumberFromString(this string value)
+        public static string ExtractNumericOrderNumber(this string value)
         {
-            // Match anything that is NOT a digit 
-            string splitPattern = @"[^\d]";
+            if (string.IsNullOrEmpty(value))
+                return string.Empty;
 
-            // Split approach: split on the pattern and exclude the match, hence the reverse logic of 
-            // matching on anything that is NOT a digit 
-            string[] results = System.Text.RegularExpressions.Regex.Split(value, splitPattern);
+            string[] orderNumberSplitted = value.Trim().Split(' ');
 
-            StringBuilder sb = new StringBuilder();
-            foreach (string s in results)
-            {
-                sb.Append(s);
-            }
+            if (orderNumberSplitted.Length > 1)
+                return orderNumberSplitted[1];
 
-            return sb.ToString();
+            return
+                value.Trim().Substring(value.Length - 8);
         }
 
         public static bool VerifyDatetimeExpaire(this DateTime deliveryDate)

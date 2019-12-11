@@ -280,7 +280,7 @@ namespace xCBLSoapWebService
                         processData.Requisition.StartTransportLocation_Latitude, processData.Requisition.StartTransportLocation_Longitude,
                         processData.Requisition.StartTransportLocation_LocationID, processData.Requisition.EndTransportLocation_GPSSystem,
                         processData.Requisition.EndTransportLocation_Latitude, processData.Requisition.EndTransportLocation_Longitude,
-                        processData.Requisition.EndTransportLocation_LocationID, processData.Requisition.Other_WorkOrder_RefNum.ExtractNumberFromString());
+                        processData.Requisition.EndTransportLocation_LocationID, processData.Requisition.Other_WorkOrder_RefNum.ExtractNumericOrderNumber());
 
                     StringBuilder strBuilder = new StringBuilder(MeridianGlobalConstants.REQUISITION_CSV_HEADER_NAMES);
                     strBuilder.AppendLine();

@@ -122,7 +122,7 @@ namespace xCBLSoapWebService
                                         pbsData.DeliveryDate = values[1];
                                         pbsData.ShipmentDate = values[2];
                                         pbsData.IsScheduled = values[3];
-                                        pbsData.OrderNumber = values[11].Trim();
+                                        pbsData.OrderNumber = values[10].Trim();
                                         pbsData.DestinationName = values[25];
                                         pbsData.DestinationStreet = values[26];
                                         pbsData.DestinationStreetSupplyment1 = values[27];

@@ -402,7 +402,7 @@ namespace xCBLSoapWebService
                        processData.ShippingSchedule.ContactName, processData.ShippingSchedule.ContactNumber_1, processData.ShippingSchedule.ContactNumber_2, processData.ShippingSchedule.ContactNumber_3, processData.ShippingSchedule.ContactNumber_4, processData.ShippingSchedule.ContactNumber_5, processData.ShippingSchedule.ContactNumber_6,
                        processData.ShippingSchedule.ShippingInstruction, processData.ShippingSchedule.GPSSystem, processData.ShippingSchedule.Latitude.ToString(), processData.ShippingSchedule.Longitude.ToString(),
                        processData.ShippingSchedule.LocationID, processData.ShippingSchedule.EstimatedArrivalDate, processData.ShippingSchedule.OrderType, initialResponse,
-                       processData.ShippingSchedule.OrderNumber.ExtractNumberFromString());
+                       processData.ShippingSchedule.OrderNumber.ExtractNumericOrderNumber());
                     StringBuilder strBuilder = new StringBuilder(MeridianGlobalConstants.CSV_HEADER_NAMES);
                     strBuilder.AppendLine();
                     strBuilder.AppendLine(record);
@@ -625,7 +625,10 @@ namespace xCBLSoapWebService
                 }
                 else
                 {
-                    processData.ShippingSchedule.Rejected01 = _meridianResult.Rejected01 = MeridianGlobalConstants.XCBL_YES_FLAG;
+                    //Need to revert this two lines vice versa after client confirmation
+                    //processData.ShippingSchedule.Rejected01 = _meridianResult.Rejected01 = MeridianGlobalConstants.XCBL_YES_FLAG;
+                    processData.ShippingSchedule.Approve01 = _meridianResult.Approve01 = MeridianGlobalConstants.XCBL_YES_FLAG;
+
                     processData.ShippingSchedule.Comments = _meridianResult.Comments = MeridianGlobalConstants.XCBL_COMMENT_ORDER_NOT_FOUND;
                     MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "UsePBSServiceDataAndUpdateFlags", "02.24", "Warning - No Data from PBS WebService", string.Format("Warning - No data got for Order '{0}' from PBS WebService", processData.OrderNumber), processData.CsvFileName, processData.ScheduleID, processData.OrderNumber, null, "Warning 02.24");
                 }

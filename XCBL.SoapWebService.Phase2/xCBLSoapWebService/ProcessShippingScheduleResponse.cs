@@ -107,7 +107,7 @@ namespace xCBLSoapWebService
                        processData.ShippingScheduleResponse.PurposeCoded, processData.ShippingScheduleResponse.ScheduleType, processData.ShippingScheduleResponse.AgencyCoded, processData.ShippingScheduleResponse.Name1, processData.ShippingScheduleResponse.Street, processData.ShippingScheduleResponse.StreetSupplement1, processData.ShippingScheduleResponse.PostalCode, processData.ShippingScheduleResponse.City, processData.ShippingScheduleResponse.RegionCoded,
                        processData.ShippingScheduleResponse.ContactName, processData.ShippingScheduleResponse.ContactNumber_1, processData.ShippingScheduleResponse.ContactNumber_2, processData.ShippingScheduleResponse.ContactNumber_3, processData.ShippingScheduleResponse.ContactNumber_4, processData.ShippingScheduleResponse.ContactNumber_5, processData.ShippingScheduleResponse.ContactNumber_6,
                        processData.ShippingScheduleResponse.ShippingInstruction, processData.ShippingScheduleResponse.GPSSystem, processData.ShippingScheduleResponse.Latitude.ToString(), processData.ShippingScheduleResponse.Longitude.ToString(), processData.ShippingScheduleResponse.LocationID, processData.ShippingScheduleResponse.EstimatedArrivalDate, processData.ShippingScheduleResponse.OrderType,
-                       processData.ShippingScheduleResponse.ScheduleResponseOrderNumber.ExtractNumberFromString());
+                       processData.ShippingScheduleResponse.ScheduleResponseOrderNumber.ExtractNumericOrderNumber());
                     StringBuilder strBuilder = new StringBuilder(MeridianGlobalConstants.SHIPPING_SCHEDULE_RESPONSE_CSV_HEADER_NAMES);
                     strBuilder.AppendLine();
                     strBuilder.AppendLine(record);
