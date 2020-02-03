@@ -167,7 +167,7 @@ namespace xCBLSoapWebService
         /// <returns>List of process data</returns>
         private ProcessData ValidateScheduleShippingResponseXmlDocument(RequestContext requestContext, XCBL_User xCblServiceUser)
         {
-            var requestMessage = requestContext.RequestMessage.ToString().ReplaceSpecialCharsWithSpace();
+            var requestMessage = requestContext.RequestMessage.ToString().ReplaceSpecialCharsWithSpace(false);
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(requestMessage);
 

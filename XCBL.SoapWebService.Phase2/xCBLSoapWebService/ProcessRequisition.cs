@@ -92,7 +92,7 @@ namespace xCBLSoapWebService
             MeridianSystemLibrary.LogTransaction("AWCTest", "No FTPUser", "ProcessRequisitionDocument", "01.01", "Success - New SOAP Request Received", "Requisition Document Process", "No FileName", "No Requisition ID", "No Order Number", null, "Success");
             //MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername, "IsAuthenticatedRequest", "01.02", "Success - Authenticated request", "Requisition Document Process", "No FileName", "No Requisition ID", "No Order Number", null, "Success");
 
-            var requestMessage = currentOperationContext.RequestContext.RequestMessage.ToString().ReplaceSpecialCharsWithSpace();
+            var requestMessage = currentOperationContext.RequestContext.RequestMessage.ToString().ReplaceSpecialCharsWithSpace(false);
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(requestMessage);
 
