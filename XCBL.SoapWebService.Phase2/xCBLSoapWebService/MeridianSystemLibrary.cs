@@ -487,8 +487,9 @@ namespace xCBLSoapWebService
 
         public static bool VerifyDatetimeExpaire(this DateTime deliveryDate)
         {
-            if (DateTime.Compare(deliveryDate, DateTime.UtcNow) > 0)
+            if (DateTime.Compare(deliveryDate.ToUniversalTime().Date, DateTime.UtcNow.Date) >= 0)
                 return true;
+
             return false;
         }
     }
