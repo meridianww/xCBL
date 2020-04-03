@@ -10,6 +10,7 @@ using System.Text;
 using System.Web;
 using System.Xml;
 using System.Xml.Linq;
+using xCBLSoapWebService.M4PL;
 
 namespace xCBLSoapWebService
 {
@@ -265,6 +266,8 @@ namespace xCBLSoapWebService
 
                     if (MeridianGlobalConstants.CONFIG_CREATE_LOCAL_CSV == MeridianGlobalConstants.SHOULD_CREATE_LOCAL_FILE)
                     {
+                        
+                        var response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() {EntityId = (int)XCBLRequestType.Requisition, Request = processData.Requisition } , "XCBL/XCBLSummaryHeader");
                         _meridianResult.UploadFromLocalPath = true;
                         return CommonProcess.CreateFile(csvContent, _meridianResult);
                     }
