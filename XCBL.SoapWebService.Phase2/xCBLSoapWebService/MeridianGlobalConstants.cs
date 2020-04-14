@@ -216,6 +216,8 @@ namespace xCBLSoapWebService
                                                             "{46},{47},{48},{49},{50}";
 
         public const string XCBL_REQUISITION_HEADER = "RequisitionHeader";
+        public const string XCBL_ORDER_HEADER = "OrderHeader";
+        public const string XCBL_ORDER_XML_Http = "Order";
         public const string XCBL_Requisition_XML_Https = "tem1:Requisition";
         public const string XCBL_Requisition_XML_Http = "tem:Requisition";
         public const string XCBL_REQUISITION_NUMBER = "//default:ReqNumber";

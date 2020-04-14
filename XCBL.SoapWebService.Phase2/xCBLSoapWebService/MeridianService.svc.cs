@@ -22,6 +22,7 @@ using System.Timers;
 using System.Xml.Linq;
 using System.Web.Hosting;
 using System.Threading;
+using xCBLSoapWebService.M4PL.Electrolux;
 
 namespace xCBLSoapWebService
 {
@@ -176,8 +177,8 @@ namespace xCBLSoapWebService
         {
             var meridianAsyncResult = state as MeridianAsyncResult;
             ProcessRequisition objProcessRequisition = new ProcessRequisition();
-            
-            if(MeridianGlobalConstants.CONFIG_AWC_REQUISITION_TEST)
+
+            if (MeridianGlobalConstants.CONFIG_AWC_REQUISITION_TEST)
                 meridianAsyncResult.Result = objProcessRequisition.ProcessRequisitionDocumentAWCTest(meridianAsyncResult.CurrentOperationContext);
             else
                 meridianAsyncResult.Result = objProcessRequisition.ProcessRequisitionDocument(meridianAsyncResult.CurrentOperationContext);
@@ -334,6 +335,32 @@ namespace xCBLSoapWebService
         public XElement HelloWorld()
         {
             return XElement.Parse(MeridianSystemLibrary.GetMeridian_Status("Hello World", "Hello World", false));
+        }
+
+        public IAsyncResult BeginOrderRequest(AsyncCallback callback, object asyncState)
+        {
+            var meridianAsyncResult = new MeridianAsyncResult(OperationContext.Current, callback, asyncState);
+            ThreadPool.QueueUserWorkItem(CompleteElectroluxProcess, meridianAsyncResult);
+            return meridianAsyncResult;
+        }
+
+        public XElement EndOrderRequest(IAsyncResult result)
+        {
+            var meridianAsyncResult = result as MeridianAsyncResult;
+            meridianAsyncResult.AsyncWait.WaitOne();
+            //if (!meridianAsyncResult.Result.Status.Equals(MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE, StringComparison.OrdinalIgnoreCase))
+            //    meridianAsyncResult.Result.Status = SendFileToFTP(meridianAsyncResult.Result).GetAwaiter().GetResult() ? MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS : MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
+            var response = XElement.Parse(MeridianSystemLibrary.GetMeridian_Status(meridianAsyncResult.Result.Status, meridianAsyncResult.Result.UniqueID, meridianAsyncResult.Result.IsSchedule));
+            return response;
+        }
+
+        private void CompleteElectroluxProcess(object state)
+        {
+            var meridianAsyncResult = state as MeridianAsyncResult;
+            ProcessElectrolux objProcessRequisition = new ProcessElectrolux();
+            meridianAsyncResult.Result = objProcessRequisition.ProcessElectroluxDocument(meridianAsyncResult.CurrentOperationContext);
+
+            meridianAsyncResult.Completed();
         }
 
         #endregion Async Method implementation

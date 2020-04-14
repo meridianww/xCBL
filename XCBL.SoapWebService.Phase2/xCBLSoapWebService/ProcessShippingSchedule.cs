@@ -407,7 +407,7 @@ namespace xCBLSoapWebService
 
                     if (MeridianGlobalConstants.CONFIG_CREATE_LOCAL_CSV == MeridianGlobalConstants.SHOULD_CREATE_LOCAL_FILE)
                     {
-                        var response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule } , "XCBL/XCBLSummaryHeader");
+                        //var response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule } , "XCBL/XCBLSummaryHeader");
                         _meridianResult.UploadFromLocalPath = true;
                         return CommonProcess.CreateFile(csvContent, _meridianResult);
                     }
