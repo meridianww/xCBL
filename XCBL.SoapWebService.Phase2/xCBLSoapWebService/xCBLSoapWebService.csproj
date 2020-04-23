@@ -92,6 +92,7 @@
     <Compile Include="M4PL\Electrolux\DeliveryUpdateRequest\OrderLine.cs" />
     <Compile Include="M4PL\Electrolux\DeliveryUpdateRequest\OrderLineDetail.cs" />
     <Compile Include="M4PL\Electrolux\DeliveryUpdateRequest\POD.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\ASNdata.cs" />
     <Compile Include="M4PL\Electrolux\OrderRequest\Body.cs" />
     <Compile Include="M4PL\Electrolux\OrderRequest\DeliverTo.cs" />
     <Compile Include="M4PL\Electrolux\OrderRequest\ElectroluxOrderDetails.cs" />

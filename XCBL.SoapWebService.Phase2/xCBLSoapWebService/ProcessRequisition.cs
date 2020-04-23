@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -266,8 +267,10 @@ namespace xCBLSoapWebService
 
                     if (MeridianGlobalConstants.CONFIG_CREATE_LOCAL_CSV == MeridianGlobalConstants.SHOULD_CREATE_LOCAL_FILE)
                     {
-                        
-                        //var response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() {EntityId = (int)XCBLRequestType.Requisition, Request = processData.Requisition } , "XCBL/XCBLSummaryHeader");
+                        if (Convert.ToBoolean(ConfigurationManager.AppSettings["EnableXCBLRequisitionForAWCToSyncWithM4PL"]))
+                        {
+                            var response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.Requisition, Request = processData.Requisition }, "XCBL/XCBLSummaryHeader");
+                        }
                         _meridianResult.UploadFromLocalPath = true;
                         return CommonProcess.CreateFile(csvContent, _meridianResult);
                     }
