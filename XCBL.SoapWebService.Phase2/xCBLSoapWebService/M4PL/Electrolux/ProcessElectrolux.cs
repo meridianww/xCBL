@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
@@ -46,11 +47,14 @@ namespace xCBLSoapWebService.M4PL.Electrolux
 
                 if (electroluxOrderDetails != null)
                 {
-                    var response = M4PL.M4PLService.CallM4PLAPI<List<OrderResponseResult>>(electroluxOrderDetails, "XCBL/Electrolux/OrderRequest");
-                    if(response !=null)
+                    if (Convert.ToBoolean(ConfigurationManager.AppSettings["EnableXCBLForElectroluxToSyncWithM4PL"]))
                     {
-                        _meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS;
+                        var response = M4PL.M4PLService.CallM4PLAPI<List<OrderResponseResult>>(electroluxOrderDetails, "XCBL/Electrolux/OrderRequest");
+                        if (response != null)
+                        {
+                            _meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS;
 
+                        }
                     }
                 }
                 else
