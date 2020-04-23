@@ -272,9 +272,12 @@ namespace xCBLSoapWebService
         {
             var meridianAsyncResult = asyncResult as MeridianAsyncResult;
             meridianAsyncResult.AsyncWait.WaitOne();
-            if (!meridianAsyncResult.Result.Status.Equals(MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE, StringComparison.OrdinalIgnoreCase))
-                meridianAsyncResult.Result.Status = SendFileToFTP(meridianAsyncResult.Result).GetAwaiter().GetResult() ? MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS : MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
-            return XElement.Parse(MeridianSystemLibrary.GetMeridian_Status(meridianAsyncResult.Result.Status, meridianAsyncResult.Result.UniqueID, meridianAsyncResult.Result.IsSchedule));
+            if (!meridianAsyncResult.Result.IsPastDate && !meridianAsyncResult.Result.Status.Equals(MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE, StringComparison.OrdinalIgnoreCase))
+                meridianAsyncResult.Result.Status = SendFileToFTP(meridianAsyncResult.Result).GetAwaiter().GetResult() 
+                    ? MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS 
+                    : MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
+            
+            return XElement.Parse(MeridianSystemLibrary.GetMeridian_Status(meridianAsyncResult.Result.Status, meridianAsyncResult.Result.UniqueID, meridianAsyncResult.Result.IsSchedule, meridianAsyncResult.Result.IsPastDate));
         }
 
         /// <summary>

@@ -287,12 +287,14 @@ namespace xCBLSoapWebService
         /// <param name="status">string - Holds the Error Message - status</param>
         /// <param name="uniqueId">string - Unique id of the XCBL file which is to be uploaded(ScheduleId - For ShippingSchedule, RequisitionId - For Requisition Request)</param>
         /// <returns></returns>
-        public static string GetMeridian_Status(string status, string uniqueId, bool isShippingSchedule = true)
+        public static string GetMeridian_Status(string status, string uniqueId, bool isShippingSchedule = true, bool isPastDate = false)
         {
             StringBuilder messageResponse = new StringBuilder();
             messageResponse.AppendLine(MeridianGlobalConstants.XML_HEADER);
             messageResponse.AppendLine(isShippingSchedule ? MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_OPEN_TAG : MeridianGlobalConstants.MESSAGE_REQUISITION_ACKNOWLEDGEMENT_OPEN_TAG);
             messageResponse.AppendLine(string.Format(MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_REFERENCE_NUMBER_OPEN_TAG + "{0}" + MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_REFERENCE_NUMBER_CLOSE_TAG, uniqueId));
+            if (isPastDate)
+                messageResponse.AppendLine(string.Format(MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_COMMENT_OPEN_TAG + "{0}" + MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_COMMENT_CLOSE_TAG, MeridianGlobalConstants.XCBL_RESPONSE_TYPE_CODED_SHIPPING_SCHEDULE_RESPONSE_REJECTED));
             messageResponse.AppendLine(string.Format(MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_NOTE_OPEN_TAG + "{0}" + MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_NOTE_CLOSE_TAG, status));
             messageResponse.AppendLine(MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_CLOSE_TAG);
             return messageResponse.ToString();
@@ -439,7 +441,7 @@ namespace xCBLSoapWebService
         /// The function which replaces the special characters (Comma, Carriage return and Line Feed) to space found in the xml String
         /// </summary>
         /// <param name="value">Xml Data</param>
-        public static string ReplaceSpecialCharsWithSpace(this string value)
+        public static string ReplaceSpecialCharsWithSpace(this string value, bool isDoubleQuoatCheck = true)
         {
             try
             {
@@ -448,7 +450,7 @@ namespace xCBLSoapWebService
                     char charLineFeed = (char)10;
                     char charCarriageReturn = (char)13;
                     char charComma = (char)44;
-
+                    char charDoubleQuoat = (char)34;
                     if (value.IndexOf(charCarriageReturn) != -1)
                         value = value.Replace(charCarriageReturn.ToString(), " ");
 
@@ -457,6 +459,9 @@ namespace xCBLSoapWebService
 
                     if (value.IndexOf(charComma) != -1)
                         value = value.Replace(charComma.ToString(), " ");
+
+                    if (isDoubleQuoatCheck && value.IndexOf(charDoubleQuoat) != -1)
+                        value = value.Replace(charDoubleQuoat.ToString(), string.Empty);
                 }
                 return value;
             }
@@ -465,7 +470,27 @@ namespace xCBLSoapWebService
                 return value;
             }
         }
+
+        public static string ExtractNumericOrderNumber(this string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return string.Empty;
+
+            string[] orderNumberSplitted = value.Trim().Split(' ');
+
+            if (orderNumberSplitted.Length > 1)
+                return orderNumberSplitted[1];
+
+            return
+                value.Trim().Substring(value.Length - 8);
+        }
+
+        public static bool VerifyDatetimeExpaire(this DateTime deliveryDate)
+        {
+            if (DateTime.Compare(deliveryDate.Date, DateTime.UtcNow.Date) >= 0)
+                return true;
+
+            return false;
+        }
     }
-
-
 }
