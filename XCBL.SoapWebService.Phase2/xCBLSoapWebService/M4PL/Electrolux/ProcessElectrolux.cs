@@ -29,7 +29,7 @@ namespace xCBLSoapWebService.M4PL.Electrolux
                 MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername, "IsAuthenticatedRequest", "01.02", "Success - Authenticated request", "Electrolux Process", "No FileName", "No Electrolux ID", "No Order Number", null, "Success");
 
                 var requestContext = currentOperationContext.RequestContext;
-                var requestMessage = requestContext.RequestMessage.ToString().ReplaceSpecialCharsWithSpace();
+                var requestMessage = requestContext.RequestMessage.ToString();//.ReplaceSpecialCharsWithSpace();
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.LoadXml(requestMessage);
 
