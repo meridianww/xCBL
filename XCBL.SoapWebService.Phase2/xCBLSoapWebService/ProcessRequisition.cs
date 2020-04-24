@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -10,6 +11,7 @@ using System.Text;
 using System.Web;
 using System.Xml;
 using System.Xml.Linq;
+using xCBLSoapWebService.M4PL;
 
 namespace xCBLSoapWebService
 {
@@ -34,7 +36,8 @@ namespace xCBLSoapWebService
             if (CommonProcess.IsAuthenticatedRequest(currentOperationContext, ref xCblServiceUser))
             {
                 MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername, "IsAuthenticatedRequest", "01.02", "Success - Authenticated request", "Requisition Document Process", "No FileName", "No Requisition ID", "No Order Number", null, "Success");
-                ProcessData processData = ProcessRequisitionRequestAndCreateFiles(currentOperationContext, xCblServiceUser);
+                bool isCSVCreationRejected = false;
+                ProcessData processData = ProcessRequisitionRequestAndCreateFiles(currentOperationContext, xCblServiceUser, out isCSVCreationRejected);
                 if (processData == null || string.IsNullOrEmpty(processData.RequisitionID) || string.IsNullOrEmpty(processData.OrderNumber))
                     _meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
                 else
@@ -48,8 +51,16 @@ namespace xCBLSoapWebService
                     _meridianResult.WebPassword = xCblServiceUser.WebPassword;
                     _meridianResult.WebHashKey = xCblServiceUser.Hashkey;
 
-                    if (!CreateLocalCsvFile(processData))
-                        _meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
+                    if (!isCSVCreationRejected)
+                    {
+                        if (!CreateLocalCsvFile(processData))
+                            _meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
+                    }
+                    else
+                    {
+                        _meridianResult.IsPastDate = true;
+                        _meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS;
+                    }
                     _meridianResult.UniqueID = processData.RequisitionID;
                     return _meridianResult;
                 }
@@ -64,7 +75,7 @@ namespace xCBLSoapWebService
 
 
         #region TODO: Need to remove, added to test AWC requisition request failure
-        
+
         /// <summary>
         /// Method to pass xCBL XML data to the web serivce
         /// </summary>
@@ -72,7 +83,7 @@ namespace xCBLSoapWebService
         /// <returns>XElement - XML Message Acknowledgement response indicating Success or Failure</returns>
         internal MeridianResult ProcessRequisitionDocumentAWCTest(OperationContext currentOperationContext)
         {
-            
+
             _meridianResult = new MeridianResult();
             _meridianResult.IsSchedule = false;
             _meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS;
@@ -83,7 +94,7 @@ namespace xCBLSoapWebService
             MeridianSystemLibrary.LogTransaction("AWCTest", "No FTPUser", "ProcessRequisitionDocument", "01.01", "Success - New SOAP Request Received", "Requisition Document Process", "No FileName", "No Requisition ID", "No Order Number", null, "Success");
             //MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername, "IsAuthenticatedRequest", "01.02", "Success - Authenticated request", "Requisition Document Process", "No FileName", "No Requisition ID", "No Order Number", null, "Success");
 
-            var requestMessage = currentOperationContext.RequestContext.RequestMessage.ToString().ReplaceSpecialCharsWithSpace();
+            var requestMessage = currentOperationContext.RequestContext.RequestMessage.ToString().ReplaceSpecialCharsWithSpace(false);
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(requestMessage);
 
@@ -101,10 +112,10 @@ namespace xCBLSoapWebService
             }
 
             MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername,
-                "ProcessRequisitionDocumentAWCTest", "01.03", 
-                "Success - Logged ProcessRequisitionDocumentAWCTest Request", 
+                "ProcessRequisitionDocumentAWCTest", "01.03",
+                "Success - Logged ProcessRequisitionDocumentAWCTest Request",
                 "Requisition Document Process", "", /*processData.RequisitionID*/"", /*processData.OrderNumber*/"", /*processData.XmlDocument*/xmlDoc, "Success");
-            
+
             return _meridianResult;
         }
 
@@ -115,17 +126,43 @@ namespace xCBLSoapWebService
         /// </summary>
         /// <param name="operationContext">Current OperationContext</param>
         /// <returns></returns>
-        private ProcessData ProcessRequisitionRequestAndCreateFiles(OperationContext operationContext, XCBL_User xCblServiceUser)
+        private ProcessData ProcessRequisitionRequestAndCreateFiles(OperationContext operationContext, XCBL_User xCblServiceUser, out bool checkIsCSVCreationRejected)
         {
+            checkIsCSVCreationRejected = false;
             try
             {
                 ProcessData processData = ValidateRequisitionXmlDocument(operationContext.RequestContext, xCblServiceUser);
                 if (processData != null && !string.IsNullOrEmpty(processData.RequisitionID)
                     && !string.IsNullOrEmpty(processData.OrderNumber)
                    && !string.IsNullOrEmpty(processData.CsvFileName))
-
                 {
-                    MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername, "ProcessRequestAndCreateFiles", "01.03", string.Format("Success - Parsed requested xml for CSV file {0}", processData.RequisitionID), "Requisition Document Process", processData.CsvFileName, processData.RequisitionID, processData.OrderNumber, processData.XmlDocument, "Success");
+                    if (MeridianGlobalConstants.CONFIG_TransitDirectionCodedOtherATDCAAIsRejectCSV.Equals(MeridianGlobalConstants.XCBL_YES_FLAG, StringComparison.OrdinalIgnoreCase))
+                    {
+                        bool transitDirectionCodedOtherFlag = string.IsNullOrEmpty(processData.Requisition.TransitDirectionCodedOther) ? true
+                            : (processData.Requisition.TransitDirectionCodedOther.ToUpper() == "ATD" || processData.Requisition.TransitDirectionCodedOther.ToUpper() == "CAA") ? false
+                            : true;
+
+                        if (!transitDirectionCodedOtherFlag)
+                        {
+                            checkIsCSVCreationRejected = true;
+                            MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "ProcessRequestAndCreateFiles", "02.27",
+                                "Reject - TransitDirectionCodedOther ATD/CAA Parsed requested xml for CSV file", string.Format("Reject - Past Due Date got for Order '{0}' Parsed requested xml for CSV file",
+                                processData.OrderNumber), null, processData.ScheduleID, processData.OrderNumber, processData.XmlDocument, "Reject 02.27");
+
+                            return processData;
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(processData.Requisition.RequestedShipByDate) && !Convert.ToDateTime(processData.Requisition.RequestedShipByDate).VerifyDatetimeExpaire())
+                    {
+                        checkIsCSVCreationRejected = true;
+                        MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "ProcessRequestAndCreateFiles", "02.26",
+                       "Reject - Past Due Date Parsed requested xml for CSV file", string.Format("Reject - Past Due Date got for Order '{0}' Parsed requested xml for CSV file", processData.OrderNumber),
+                       null, processData.ScheduleID, processData.OrderNumber, processData.XmlDocument, "Reject 02.26");
+                    }
+                    if (!checkIsCSVCreationRejected)
+                        MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername, "ProcessRequestAndCreateFiles", "01.03", string.Format("Success - Parsed requested xml for CSV file {0}", processData.RequisitionID), "Requisition Document Process", processData.CsvFileName, processData.RequisitionID, processData.OrderNumber, processData.XmlDocument, "Success");
+
                     return processData;
                 }
             }
@@ -145,7 +182,7 @@ namespace xCBLSoapWebService
         /// <returns>List of process data</returns>
         private ProcessData ValidateRequisitionXmlDocument(RequestContext requestContext, XCBL_User xCblServiceUser)
         {
-            var requestMessage = requestContext.RequestMessage.ToString().ReplaceSpecialCharsWithSpace();
+            var requestMessage = requestContext.RequestMessage.ToString().ReplaceSpecialCharsWithSpace(false);
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(requestMessage);
 
@@ -245,8 +282,7 @@ namespace xCBLSoapWebService
                         processData.Requisition.StartTransportLocation_Latitude, processData.Requisition.StartTransportLocation_Longitude,
                         processData.Requisition.StartTransportLocation_LocationID, processData.Requisition.EndTransportLocation_GPSSystem,
                         processData.Requisition.EndTransportLocation_Latitude, processData.Requisition.EndTransportLocation_Longitude,
-                        processData.Requisition.EndTransportLocation_LocationID
-                        );
+                        processData.Requisition.EndTransportLocation_LocationID, processData.Requisition.Other_WorkOrder_RefNum.ExtractNumericOrderNumber());
 
                     StringBuilder strBuilder = new StringBuilder(MeridianGlobalConstants.REQUISITION_CSV_HEADER_NAMES);
                     strBuilder.AppendLine();
@@ -265,6 +301,10 @@ namespace xCBLSoapWebService
 
                     if (MeridianGlobalConstants.CONFIG_CREATE_LOCAL_CSV == MeridianGlobalConstants.SHOULD_CREATE_LOCAL_FILE)
                     {
+                        if (Convert.ToBoolean(ConfigurationManager.AppSettings["EnableXCBLRequisitionForAWCToSyncWithM4PL"]))
+                        {
+                            var response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.Requisition, Request = processData.Requisition }, "XCBL/XCBLSummaryHeader");
+                        }
                         _meridianResult.UploadFromLocalPath = true;
                         return CommonProcess.CreateFile(csvContent, _meridianResult);
                     }

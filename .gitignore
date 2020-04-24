@@ -1,0 +1,5 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/XCBL.SoapWebService.Phase2/xCBLSoapWebService/obj/Debug

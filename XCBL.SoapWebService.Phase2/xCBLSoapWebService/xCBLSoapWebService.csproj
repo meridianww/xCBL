@@ -41,6 +41,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Linq" />
@@ -72,8 +76,46 @@
   <ItemGroup>
     <Compile Include="AsyncResult.cs" />
     <Compile Include="CommonProcess.cs" />
+    <Compile Include="Common\JsonSerializer.cs" />
+    <Compile Include="Common\SerializationHelper.cs" />
+    <Compile Include="Common\XmlSerializer.cs" />
     <Compile Include="Encryption.cs" />
     <Compile Include="FileToSend.cs" />
+    <Compile Include="M4PL\Authentication\Login.cs" />
+    <Compile Include="M4PL\Authentication\LoginResponse.cs" />
+    <Compile Include="M4PL\Authentication\TokenHelper.cs" />
+    <Compile Include="M4PL\Electrolux\DeliveryUpdateRequest\DeliveryImages.cs" />
+    <Compile Include="M4PL\Electrolux\DeliveryUpdateRequest\DeliverySignature.cs" />
+    <Compile Include="M4PL\Electrolux\DeliveryUpdateRequest\DeliveryUpdate.cs" />
+    <Compile Include="M4PL\Electrolux\DeliveryUpdateRequest\ExceptionInfo.cs" />
+    <Compile Include="M4PL\Electrolux\DeliveryUpdateRequest\Exceptions.cs" />
+    <Compile Include="M4PL\Electrolux\DeliveryUpdateRequest\OrderLine.cs" />
+    <Compile Include="M4PL\Electrolux\DeliveryUpdateRequest\OrderLineDetail.cs" />
+    <Compile Include="M4PL\Electrolux\DeliveryUpdateRequest\POD.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\ASNdata.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\Body.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\DeliverTo.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\ElectroluxOrderDetails.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\From.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\Header.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\LineDescription.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\LineDescriptionDetails.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\Message.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\Order.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\OrderDescription.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\OrderDescriptionList.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\OrderHeader.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\OrderLineDetail.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\OrderLineDetailList.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\ShipFrom.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\ShipTo.cs" />
+    <Compile Include="M4PL\Electrolux\OrderRequest\To.cs" />
+    <Compile Include="M4PL\Electrolux\OrderResponse\OrderResponseResult.cs" />
+    <Compile Include="M4PL\Electrolux\ProcessElectrolux.cs" />
+    <Compile Include="M4PL\Enums.cs" />
+    <Compile Include="M4PL\M4PLHttpResponse.cs" />
+    <Compile Include="M4PL\M4PLService.cs" />
+    <Compile Include="M4PL\XCBLToM4PLRequest.cs" />
     <Compile Include="MeridianGlobalConstants.cs" />
     <Compile Include="MeridianResult.cs" />
     <Compile Include="MeridianService.svc.cs">
@@ -98,6 +140,7 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -598,7 +598,7 @@ namespace xCBLSoapWebService
         {
             try
             {
-                var requestMessage = operationContext.RequestContext.RequestMessage.ToString().ReplaceSpecialCharsWithSpace();
+                var requestMessage = operationContext.RequestContext.RequestMessage.ToString().ReplaceSpecialCharsWithSpace(false);
                 XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.LoadXml(requestMessage);
 
