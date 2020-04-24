@@ -13,20 +13,20 @@ namespace xCBLSoapWebService.M4PL.Authentication
         public static string Token { get; set; }
         public static DateTime ExpirationTime { get; set; }
 
-        public static string GetAuthToken()
+        public static string GetAuthToken(bool isElectrolux = false)
         {
-            return DateTime.UtcNow > ExpirationTime ? GenerateToken() : Token;
+            return DateTime.UtcNow > ExpirationTime ? GenerateToken(isElectrolux) : Token;
         }
 
-        public static string GenerateToken()
+        public static string GenerateToken(bool isElectrolux = false)
         {
             LoginResponse result = null;
             string serviceCall = string.Format("{0}/Account/Login", ConfigurationManager.AppSettings["APIUrl"]);
             Login loginModel = new Login()
             {
                 ClientId = ConfigurationManager.AppSettings["ClientId"],
-                Password = ConfigurationManager.AppSettings["Password"],
-                Username = ConfigurationManager.AppSettings["Username"]
+                Password = isElectrolux ? ConfigurationManager.AppSettings["Electrolux_xCBL_Password"] : ConfigurationManager.AppSettings["Password"],
+                Username = isElectrolux ? ConfigurationManager.AppSettings["Electrolux_xCBL_Username"] : ConfigurationManager.AppSettings["Username"]
             };
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serviceCall);

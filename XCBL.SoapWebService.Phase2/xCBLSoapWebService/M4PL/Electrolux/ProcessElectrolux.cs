@@ -49,7 +49,7 @@ namespace xCBLSoapWebService.M4PL.Electrolux
                 {
                     if (Convert.ToBoolean(ConfigurationManager.AppSettings["EnableXCBLForElectroluxToSyncWithM4PL"]))
                     {
-                        var response = M4PL.M4PLService.CallM4PLAPI<List<OrderResponseResult>>(electroluxOrderDetails, "XCBL/Electrolux/OrderRequest");
+                        var response = M4PL.M4PLService.CallM4PLAPI<List<OrderResponseResult>>(electroluxOrderDetails, "XCBL/Electrolux/OrderRequest",isElectrolux: true);
                         if (response != null)
                         {
                             _meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS;
