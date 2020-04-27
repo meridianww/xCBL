@@ -128,6 +128,22 @@ namespace xCBLSoapWebService
         // Need to include response value of Success or Failure in Status Tag
         public const string MESSAGE_ACKNOWLEDGEMENT_NOTE_CLOSE_TAG = "</Status></AcknowledgementNote>";
         public const string MESSAGE_ACKNOWLEDGEMENT_CLOSE_TAG = "</MessageAcknowledgement>";
+
+
+        //ElectroluxResponse
+        public const string MESSAGE_ACKNOWLEDGEMENT_NOTE_ELECTROLUX_OPEN_TAG = "<AcknowledgementNote><OrderResponse>";
+        public const string MESSAGE_ACKNOWLEDGEMENT_NOTE_ELECTROLUX_CLOSE_TAG = "</OrderResponse></AcknowledgementNote>";
+        public const string MESSAGE_ORDERRESPONSE_OPEN_TAG = "<OrderResponse>";
+        public const string MESSAGE_ORDERRESPONSE_CLOSE_TAG = "</OrderResponse>";
+        public const string MESSAGE_SUBJECT_OPEN_TAG = "<subject>";
+        public const string MESSAGE_SUBJECT_CLOSE_TAG = "</subject>";
+        public const string MESSAGE_CLIENTMESSAGEID_OPEN_TAG = "<clientMessageID>";
+        public const string MESSAGE_CLIENTMESSAGEID_CLOSE_TAG = "</clientMessageID>";
+        public const string MESSAGE_SENDERMESSAGEID_OPEN_TAG = "<senderMessageID>";
+        public const string MESSAGE_SENDERMESSAGEID_CLOSE_TAG = "</senderMessageID>";
+        public const string MESSAGE_STATUSCODE_OPEN_TAG = "<senderMessageID>";
+        public const string MESSAGE_STATUSCODE_CLOSE_TAG = "</senderMessageID>";
+
         /*********************************************************************************************************************************************************************/
         #endregion
 

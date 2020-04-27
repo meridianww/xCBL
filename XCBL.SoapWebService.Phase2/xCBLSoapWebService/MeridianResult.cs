@@ -55,5 +55,6 @@ namespace xCBLSoapWebService
         public string Rejected01 { get; set; }
         public string Comments { get; set; }
         public bool IsPastDate { get; set; }
+        public object ResultObject { get; set; }
     }
 }
