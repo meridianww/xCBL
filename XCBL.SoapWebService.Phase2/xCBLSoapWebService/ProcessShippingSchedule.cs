@@ -438,27 +438,35 @@ namespace xCBLSoapWebService
                             string devUrl = ConfigurationManager.AppSettings["M4PLDevUrl"];
                             string scannerUrl = ConfigurationManager.AppSettings["M4PLScannerAPI"];
 
+                            if (!string.IsNullOrEmpty(prodUrl))
+                            {
+                                tasks.Add(
+                                    Task.Factory.StartNew(() =>
+                                    {
+                                        response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader", isElectrolux: false, baseUrl: prodUrl, clientId: ClientId, userName: Username, Password: Password);
+                                    }
+                                    ));
+                            }
 
-                            tasks.Add(
-                                Task.Factory.StartNew(() =>
-                                {
-                                    response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader",isElectrolux: false,baseUrl: prodUrl, clientId: ClientId,userName:Username,Password: Password);
-                                }
-                                ));
+                            if (!string.IsNullOrEmpty(devUrl))
+                            {
+                                tasks.Add(
+                                   Task.Factory.StartNew(() =>
+                                   {
+                                       M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader", isElectrolux: false, baseUrl: devUrl, clientId: ClientId, userName: Username, Password: Password);
+                                   }
+                                   ));
+                            }
 
-                            tasks.Add(
-                               Task.Factory.StartNew(() =>
-                               {
-                                   M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader", isElectrolux: false, baseUrl: devUrl, clientId: ClientId, userName: Username, Password: Password);
-                               }
-                               ));
-                            tasks.Add(
-                               Task.Factory.StartNew(() =>
-                               {
-                                   M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader", isElectrolux: false, baseUrl: scannerUrl, clientId: ClientId, userName: Username, Password: Password);
-                               }
-                               ));
-
+                            if (!string.IsNullOrEmpty(scannerUrl))
+                            {
+                                tasks.Add(
+                                   Task.Factory.StartNew(() =>
+                                   {
+                                       M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader", isElectrolux: false, baseUrl: scannerUrl, clientId: ClientId, userName: Username, Password: Password);
+                                   }
+                                   ));
+                            }
                             Task.WaitAll(tasks.ToArray());
                             
                         }

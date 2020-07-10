@@ -64,26 +64,34 @@ namespace xCBLSoapWebService.M4PL.Electrolux
                         string scannerUrl = ConfigurationManager.AppSettings["M4PLScannerAPI"];
 
 
-                        tasks.Add(
-                            Task.Factory.StartNew(() =>
-                            {
-                                response = M4PL.M4PLService.CallM4PLAPI<List<OrderResponseResult>>(electroluxOrderDetails, "XCBL/Electrolux/OrderRequest", isElectrolux: true, baseUrl: ConfigurationManager.AppSettings["M4PLProdAPI"], clientId: ClientId, userName: Username, Password: Password);
-                            }
-                            ));
+                        if (!string.IsNullOrEmpty(prodUrl))
+                        {
+                            tasks.Add(
+                                Task.Factory.StartNew(() =>
+                                {
+                                    response = M4PL.M4PLService.CallM4PLAPI<List<OrderResponseResult>>(electroluxOrderDetails, "XCBL/Electrolux/OrderRequest", isElectrolux: true, baseUrl: ConfigurationManager.AppSettings["M4PLProdAPI"], clientId: ClientId, userName: Username, Password: Password);
+                                }
+                                ));
+                        }
+                        if (!string.IsNullOrEmpty(devUrl))
+                        {
+                            tasks.Add(
+                               Task.Factory.StartNew(() =>
+                               {
+                                   M4PL.M4PLService.CallM4PLAPI<List<OrderResponseResult>>(electroluxOrderDetails, "XCBL/Electrolux/OrderRequest", isElectrolux: true, baseUrl: ConfigurationManager.AppSettings["M4PLDevUrl"], clientId: ClientId, userName: Username, Password: Password);
+                               }
+                               ));
+                        }
 
-                        tasks.Add(
-                           Task.Factory.StartNew(() =>
-                           {
-                               M4PL.M4PLService.CallM4PLAPI<List<OrderResponseResult>>(electroluxOrderDetails, "XCBL/Electrolux/OrderRequest", isElectrolux: true, baseUrl: ConfigurationManager.AppSettings["M4PLDevUrl"], clientId: ClientId, userName: Username, Password: Password);
-                           }
-                           ));
-                        tasks.Add(
-                           Task.Factory.StartNew(() =>
-                           {
-                               M4PL.M4PLService.CallM4PLAPI<List<OrderResponseResult>>(electroluxOrderDetails, "XCBL/Electrolux/OrderRequest", isElectrolux: true, baseUrl: ConfigurationManager.AppSettings["M4PLScannerAPI"], clientId: ClientId, userName: Username, Password: Password);
-                           }
-                           ));
-
+                        if (!string.IsNullOrEmpty(scannerUrl))
+                        {
+                            tasks.Add(
+                               Task.Factory.StartNew(() =>
+                               {
+                                   M4PL.M4PLService.CallM4PLAPI<List<OrderResponseResult>>(electroluxOrderDetails, "XCBL/Electrolux/OrderRequest", isElectrolux: true, baseUrl: ConfigurationManager.AppSettings["M4PLScannerAPI"], clientId: ClientId, userName: Username, Password: Password);
+                               }
+                               ));
+                        }
                         Task.WaitAll(tasks.ToArray());
                         if (response != null)
                         {
