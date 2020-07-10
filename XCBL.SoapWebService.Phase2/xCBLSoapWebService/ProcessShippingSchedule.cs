@@ -10,6 +10,7 @@ using System.Linq;
 using System.Collections.Generic;
 using xCBLSoapWebService.M4PL;
 using System.Configuration;
+using System.Threading.Tasks;
 
 namespace xCBLSoapWebService
 {
@@ -425,7 +426,41 @@ namespace xCBLSoapWebService
                     {
                         if (Convert.ToBoolean(ConfigurationManager.AppSettings["EnableXCBLShippingScheduleForAWCToSyncWithM4PL"]))
                         {
-                            var response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader");
+
+
+                            var response = new List<long>();
+                            List<Task> tasks = new List<Task>();
+
+                            string ClientId = ConfigurationManager.AppSettings["ClientId"];
+                            string Password = ConfigurationManager.AppSettings["Password"];
+                            string Username = ConfigurationManager.AppSettings["Username"];
+                            string prodUrl = ConfigurationManager.AppSettings["M4PLProdAPI"];
+                            string devUrl = ConfigurationManager.AppSettings["M4PLDevUrl"];
+                            string scannerUrl = ConfigurationManager.AppSettings["M4PLScannerAPI"];
+
+
+                            tasks.Add(
+                                Task.Factory.StartNew(() =>
+                                {
+                                    response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader",isElectrolux: false,baseUrl: prodUrl, clientId: ClientId,userName:Username,Password: Password);
+                                }
+                                ));
+
+                            tasks.Add(
+                               Task.Factory.StartNew(() =>
+                               {
+                                   M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader", isElectrolux: false, baseUrl: devUrl, clientId: ClientId, userName: Username, Password: Password);
+                               }
+                               ));
+                            tasks.Add(
+                               Task.Factory.StartNew(() =>
+                               {
+                                   M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader", isElectrolux: false, baseUrl: scannerUrl, clientId: ClientId, userName: Username, Password: Password);
+                               }
+                               ));
+
+                            Task.WaitAll(tasks.ToArray());
+                            
                         }
                         _meridianResult.UploadFromLocalPath = true;
                         return CommonProcess.CreateFile(csvContent, _meridianResult);

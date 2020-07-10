@@ -13,26 +13,40 @@ namespace xCBLSoapWebService.M4PL.Authentication
         public static string Token { get; set; }
         public static DateTime ExpirationTime { get; set; }
 
-        public static string GetAuthToken(bool isElectrolux = false)
+        public static string GetAuthToken(bool isElectrolux = false, string baseurl = "", string clientId = "", string userName ="", string Password = "")
         {
-            return DateTime.UtcNow > ExpirationTime ? GenerateToken(isElectrolux) : Token;
+            return  GenerateToken(isElectrolux, baseurl, clientId, userName, Password);
         }
 
-        public static string GenerateToken(bool isElectrolux = false)
+        public static string GenerateToken(bool isElectrolux = false, string baseUrl = "", string clientId ="",string userName = "", string password = "")
         {
             LoginResponse result = null;
-            string serviceCall = string.Format("{0}/Account/Login", ConfigurationManager.AppSettings["APIUrl"]);
-            Login loginModel = new Login()
+            string serviceCall = string.Format("{0}/Account/Login", string.IsNullOrEmpty(baseUrl) ? ConfigurationManager.AppSettings["M4PLProdAPI"] : baseUrl);
+            Login loginModel = null;
+            if (!isElectrolux)
             {
-                ClientId = ConfigurationManager.AppSettings["ClientId"],
-                Password = isElectrolux ? ConfigurationManager.AppSettings["Electrolux_xCBL_Password"] : ConfigurationManager.AppSettings["Password"],
-                Username = isElectrolux ? ConfigurationManager.AppSettings["Electrolux_xCBL_Username"] : ConfigurationManager.AppSettings["Username"]
-            };
+                loginModel = new Login()
+                {
+                    ClientId = string.IsNullOrEmpty(clientId) ? ConfigurationManager.AppSettings["ClientId"] : clientId,
+                    Password = string.IsNullOrEmpty(password) ? ConfigurationManager.AppSettings["Password"] : password,
+                    Username = string.IsNullOrEmpty(userName) ? ConfigurationManager.AppSettings["Username"] : userName
+                };
+            }
+            else
+            {
+                loginModel = new Login()
+                {
+                    ClientId = string.IsNullOrEmpty(clientId) ? ConfigurationManager.AppSettings["ClientId"] : clientId,
+                    Password = string.IsNullOrEmpty(userName) ? ConfigurationManager.AppSettings["Electrolux_xCBL_Password"] : password,
+                    Username = string.IsNullOrEmpty(password) ? ConfigurationManager.AppSettings["Electrolux_xCBL_Username"] : userName
+                };
+            }
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serviceCall);
             request.KeepAlive = false;
             request.ContentType = "application/json";
             request.Method = "POST";
+            request.Proxy.Credentials = System.Net.CredentialCache.DefaultCredentials;
             using (var streamWriter = new StreamWriter(request.GetRequestStream()))
             {
                 string loginModelJson = Newtonsoft.Json.JsonConvert.SerializeObject(loginModel);

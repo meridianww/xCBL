@@ -14,14 +14,14 @@ namespace xCBLSoapWebService.M4PL
 {
     public class M4PLService
     {
-        public static T CallM4PLAPI<T>(object input,string  url, string methodType = "POST",bool isElectrolux = false)
+        public static T CallM4PLAPI<T>(object input,string  url, string methodType = "POST",bool isElectrolux = false, string baseUrl = "", string clientId = "",string userName = "", string Password ="")
         {
 
             string dataContentType = "application/json";
             var response = default(T);
-            string authToken = TokenHelper.GetAuthToken(isElectrolux);
+            string authToken = TokenHelper.GetAuthToken(isElectrolux, baseUrl, clientId, userName, Password);
             string commentJson = string.Empty;
-            string serviceCall = string.Format("{0}/{1}", ConfigurationManager.AppSettings["APIUrl"],url);
+            string serviceCall = string.Format("{0}/{1}", string.IsNullOrEmpty(baseUrl) ? ConfigurationManager.AppSettings["M4PLProdAPI"] : baseUrl,url);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serviceCall);
             request.KeepAlive = false;
             request.ContentType = dataContentType;
