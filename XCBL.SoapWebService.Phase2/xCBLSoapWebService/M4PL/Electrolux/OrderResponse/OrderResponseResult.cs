@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace xCBLSoapWebService.M4PL.Electrolux.OrderResponse
 {
@@ -12,10 +7,13 @@ namespace xCBLSoapWebService.M4PL.Electrolux.OrderResponse
 	{
 		[XmlElement(ElementName = "subject")]
 		public string Subject { get; set; }
+
 		[XmlElement(ElementName = "clientMessageID")]
 		public string ClientMessageID { get; set; }
+
 		[XmlElement(ElementName = "senderMessageID")]
 		public string SenderMessageID { get; set; }
+
 		[XmlElement(ElementName = "statusCode")]
 		public string StatusCode { get; set; }
 	}
