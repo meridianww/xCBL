@@ -301,7 +301,7 @@ namespace xCBLSoapWebService
 			StringBuilder messageResponse = new StringBuilder();
 			messageResponse.AppendLine(MeridianGlobalConstants.XML_HEADER);
 			messageResponse.AppendLine(MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_NOTE_ELECTROLUX_OPEN_TAG);
-			messageResponse.AppendLine(MeridianGlobalConstants.MESSAGE_SUBJECT_OPEN_TAG + "Order" + MeridianGlobalConstants.MESSAGE_SUBJECT_CLOSE_TAG);
+			messageResponse.AppendLine(string.Format(MeridianGlobalConstants.MESSAGE_SUBJECT_OPEN_TAG + "{0}" + MeridianGlobalConstants.MESSAGE_SUBJECT_CLOSE_TAG, orderResponseResult.Subject));
 			messageResponse.AppendLine(string.Format(MeridianGlobalConstants.MESSAGE_CLIENTMESSAGEID_OPEN_TAG + "{0}" + MeridianGlobalConstants.MESSAGE_CLIENTMESSAGEID_CLOSE_TAG, orderResponseResult.ClientMessageID));
 			messageResponse.AppendLine(string.Format(MeridianGlobalConstants.MESSAGE_SENDERMESSAGEID_OPEN_TAG + "{0}" + MeridianGlobalConstants.MESSAGE_SENDERMESSAGEID_CLOSE_TAG, orderResponseResult.SenderMessageID));
 			messageResponse.AppendLine(string.Format(MeridianGlobalConstants.MESSAGE_STATUSCODE_OPEN_TAG + "{0}" + MeridianGlobalConstants.MESSAGE_STATUSCODE_CLOSE_TAG, orderResponseResult.StatusCode));
