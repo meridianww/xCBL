@@ -300,11 +300,6 @@ namespace xCBLSoapWebService
 			OrderResponseResult orderResponseResult = (OrderResponseResult)m4plresponse;
 			StringBuilder messageResponse = new StringBuilder();
 			messageResponse.AppendLine(MeridianGlobalConstants.XML_HEADER);
-			messageResponse.AppendLine(isShippingSchedule ? MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_OPEN_TAG : MeridianGlobalConstants.MESSAGE_REQUISITION_ACKNOWLEDGEMENT_OPEN_TAG);
-			messageResponse.AppendLine(string.Format(MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_REFERENCE_NUMBER_OPEN_TAG + "{0}" + MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_REFERENCE_NUMBER_CLOSE_TAG, uniqueId));
-			if (isPastDate)
-				messageResponse.AppendLine(string.Format(MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_COMMENT_OPEN_TAG + "{0}" + MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_COMMENT_CLOSE_TAG, MeridianGlobalConstants.XCBL_RESPONSE_TYPE_CODED_SHIPPING_SCHEDULE_RESPONSE_REJECTED));
-
 			messageResponse.AppendLine(MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_NOTE_ELECTROLUX_OPEN_TAG);
 			messageResponse.AppendLine(MeridianGlobalConstants.MESSAGE_SUBJECT_OPEN_TAG + "Order" + MeridianGlobalConstants.MESSAGE_SUBJECT_CLOSE_TAG);
 			messageResponse.AppendLine(string.Format(MeridianGlobalConstants.MESSAGE_CLIENTMESSAGEID_OPEN_TAG + "{0}" + MeridianGlobalConstants.MESSAGE_CLIENTMESSAGEID_CLOSE_TAG, orderResponseResult.ClientMessageID));
@@ -312,7 +307,6 @@ namespace xCBLSoapWebService
 			messageResponse.AppendLine(string.Format(MeridianGlobalConstants.MESSAGE_STATUSCODE_OPEN_TAG + "{0}" + MeridianGlobalConstants.MESSAGE_STATUSCODE_CLOSE_TAG, orderResponseResult.StatusCode));
 			messageResponse.AppendLine(MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_NOTE_ELECTROLUX_CLOSE_TAG);
 
-			messageResponse.AppendLine(MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_CLOSE_TAG);
 			return messageResponse.ToString();
 		}
 
