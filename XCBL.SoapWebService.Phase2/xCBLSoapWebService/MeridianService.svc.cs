@@ -350,8 +350,6 @@ namespace xCBLSoapWebService
 		{
 			var meridianAsyncResult = result as MeridianAsyncResult;
 			meridianAsyncResult.AsyncWait.WaitOne();
-			//if (!meridianAsyncResult.Result.Status.Equals(MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE, StringComparison.OrdinalIgnoreCase))
-			//    meridianAsyncResult.Result.Status = SendFileToFTP(meridianAsyncResult.Result).GetAwaiter().GetResult() ? MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS : MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
 			var response = XElement.Parse(MeridianSystemLibrary.GetMeridian_StatusForOrderRequest(meridianAsyncResult.Result.Status, meridianAsyncResult.Result.UniqueID, meridianAsyncResult.Result.ResultObject, meridianAsyncResult.Result.IsSchedule));
 			return response;
 		}
