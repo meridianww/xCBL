@@ -429,7 +429,14 @@ namespace xCBLSoapWebService
 								tasks.Add(
 									Task.Factory.StartNew(() =>
 									{
-										response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader", isElectrolux: false, baseUrl: prodUrl, clientId: ClientId, userName: Username, Password: Password);
+                                        try
+                                        {
+                                            response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader", isElectrolux: false, baseUrl: prodUrl, clientId: ClientId, userName: Username, Password: Password);
+                                        }
+                                        catch(Exception ex)
+                                        {
+
+                                        }
 									}
 									));
 							}
@@ -439,7 +446,14 @@ namespace xCBLSoapWebService
 								tasks.Add(
 								   Task.Factory.StartNew(() =>
 								   {
-									   M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader", isElectrolux: false, baseUrl: devUrl, clientId: ClientId, userName: Username, Password: Password);
+                                       try
+                                       {
+                                           M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader", isElectrolux: false, baseUrl: devUrl, clientId: ClientId, userName: Username, Password: Password);
+                                       }
+                                       catch(Exception ex)
+                                       {
+
+                                       }
 								   }
 								   ));
 							}
@@ -449,7 +463,14 @@ namespace xCBLSoapWebService
 								tasks.Add(
 								   Task.Factory.StartNew(() =>
 								   {
-									   M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader", isElectrolux: false, baseUrl: scannerUrl, clientId: ClientId, userName: Username, Password: Password);
+                                       try
+                                       {
+                                           M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader", isElectrolux: false, baseUrl: scannerUrl, clientId: ClientId, userName: Username, Password: Password);
+                                       }
+                                       catch(Exception ex)
+                                       {
+
+                                       }
 								   }
 								   ));
 							}
