@@ -434,7 +434,10 @@ namespace xCBLSoapWebService
                                         }
                                         catch (Exception ex)
                                         {
-                                            MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "Exception: " + ex.Message, "10.10", "Data updating in M4PL", string.Format("Exception: " + ex.InnerException?.Message + " { 1}", processData.CsvFileName, ex.Message), processData.CsvFileName, processData.ScheduleID, processData.OrderNumber, processData.XmlDocument, "Data updating in M4PL");
+                                            MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "Exception: " + Convert.ToString(ex.Message),
+                                              "10.10", "Data updating in M4PL from " + prodUrl, string.Format("Exception: " + Convert.ToString(ex.InnerException?.Message) + " {0}",
+                                              processData.CsvFileName), processData.CsvFileName, processData.ScheduleID, processData.OrderNumber,
+                                              processData.XmlDocument, "Data updating in M4PL");
                                         }
                                     }
                                     ));
@@ -451,7 +454,10 @@ namespace xCBLSoapWebService
                                        }
                                        catch (Exception ex)
                                        {
-                                           MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "Exception: " + ex.Message, "10.10", "Data updating in M4PL", string.Format("Exception: " + ex.InnerException?.Message + " { 1}", processData.CsvFileName, ex.Message), processData.CsvFileName, processData.ScheduleID, processData.OrderNumber, processData.XmlDocument, "Data updating in M4PL");
+                                           MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "Exception: " + Convert.ToString(ex.Message),
+                                               "10.10", "Data updating in M4PL from " + devUrl, string.Format("Exception: " + Convert.ToString(ex.InnerException?.Message) + " {0}",
+                                               processData.CsvFileName), processData.CsvFileName, processData.ScheduleID, processData.OrderNumber,
+                                               processData.XmlDocument, "Data updating in M4PL");
                                        }
                                    }
                                    ));
@@ -468,7 +474,10 @@ namespace xCBLSoapWebService
                                        }
                                        catch (Exception ex)
                                        {
-                                           MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "Exception: " + ex.Message, "10.10", "Data updating in M4PL", string.Format("Exception: " + ex.InnerException?.Message + " { 1}", processData.CsvFileName, ex.Message), processData.CsvFileName, processData.ScheduleID, processData.OrderNumber, processData.XmlDocument, "Data updating in M4PL");
+                                           MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "Exception: " + Convert.ToString(ex.Message),
+                                              "10.10", "Data updating in M4PL from " + scannerUrl, string.Format("Exception: " + Convert.ToString(ex.InnerException?.Message) + " {0}",
+                                              processData.CsvFileName), processData.CsvFileName, processData.ScheduleID, processData.OrderNumber,
+                                              processData.XmlDocument, "Data updating in M4PL");
                                        }
                                    }
                                    ));
