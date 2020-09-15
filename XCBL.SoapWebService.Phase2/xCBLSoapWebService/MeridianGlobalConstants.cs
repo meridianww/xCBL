@@ -64,8 +64,9 @@ namespace xCBLSoapWebService
 
 		public static readonly string PBS_TEXT_FILE_LOCATION = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["PBSTextFileLocation"]);
 		public static readonly string SHOULD_DELETE_PBS_TEXT_FILE = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["DeleteTextFileFromOUTFolder"]);
+        public static readonly bool IsProductionEnvironment = Convert.ToBoolean(System.Configuration.ConfigurationManager.AppSettings["IsProductionEnvironment"]);
 
-		public const string PBS_CSV_HEADERS = "DeliveryDate,ShpDate,Scheduled,OrderNumber,DestinationName,DestinationAddress,DestinationAddress2,DestinationCity,DestinationState,DestinationZip";
+        public const string PBS_CSV_HEADERS = "DeliveryDate,ShpDate,Scheduled,OrderNumber,DestinationName,DestinationAddress,DestinationAddress2,DestinationCity,DestinationState,DestinationZip";
 		public const string PBS_CSV_HEADER_NAME_FORMAT = "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}";
 
 		public const string XCBL_YES_FLAG = "Y";
