@@ -21,6 +21,7 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,9 +42,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -81,6 +81,7 @@
     <Compile Include="Common\XmlSerializer.cs" />
     <Compile Include="Encryption.cs" />
     <Compile Include="FileToSend.cs" />
+    <Compile Include="M4PL\API.cs" />
     <Compile Include="M4PL\Authentication\Login.cs" />
     <Compile Include="M4PL\Authentication\LoginResponse.cs" />
     <Compile Include="M4PL\Authentication\TokenHelper.cs" />
@@ -112,6 +113,10 @@
     <Compile Include="M4PL\Electrolux\OrderRequest\To.cs" />
     <Compile Include="M4PL\Electrolux\OrderResponse\OrderResponseResult.cs" />
     <Compile Include="M4PL\Electrolux\ProcessElectrolux.cs" />
+    <Compile Include="M4PL\Entities\API_Job_Response.cs" />
+    <Compile Include="M4PL\Entities\API_Search_Response.cs" />
+    <Compile Include="M4PL\Entities\Job.cs" />
+    <Compile Include="M4PL\Entities\SearchOrder.cs" />
     <Compile Include="M4PL\Enums.cs" />
     <Compile Include="M4PL\M4PLHttpResponse.cs" />
     <Compile Include="M4PL\M4PLService.cs" />
@@ -140,7 +145,7 @@
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

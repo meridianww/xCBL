@@ -186,7 +186,7 @@ namespace xCBLSoapWebService
 		/// <param name="content">Content want to write</param>
 		/// <param name="processData">Process Data</param>
 		/// <returns></returns>
-		internal async static void SendShippingScheduleResponse1(MeridianResult meridianResult, string responseTypeCoded = null)
+		internal async static void SendShippingScheduleResponseImmediately(MeridianResult meridianResult, string responseTypeCoded = null)
 		{
 			try
 			{

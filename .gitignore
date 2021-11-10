@@ -1,4 +1,4 @@
-﻿################################################################################
+################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
@@ -27,3 +27,11 @@
 /XCBL.SoapWebService.Phase2/.vs/xCBLSoapWebService/v16/Server/sqlite3/storage.ide-shm
 /XCBL.SoapWebService.Phase2/.vs/xCBLSoapWebService/v16/Server/sqlite3/storage.ide-wal
 /XCBL.SoapWebService.Phase2/.vs/xCBLSoapWebService/v16/.suo
+XCBL.SoapWebService.Phase2/.vs/xCBLSoapWebService/v15/Server/sqlite3/db.lock
+XCBL.SoapWebService.Phase2/.vs/xCBLSoapWebService/v15/Server/sqlite3/storage.ide
+XCBL.SoapWebService.Phase2/.vs/xCBLSoapWebService/v15/Server/sqlite3/storage.ide-shm
+XCBL.SoapWebService.Phase2/.vs/xCBLSoapWebService/v15/Server/sqlite3/storage.ide-wal
+XCBL.SoapWebService.Phase2/packages/Newtonsoft.Json.13.0.1/.signature.p7s
+XCBL.SoapWebService.Phase2/packages/Newtonsoft.Json.13.0.1/LICENSE.md
+XCBL.SoapWebService.Phase2/packages/Newtonsoft.Json.13.0.1/Newtonsoft.Json.13.0.1.nupkg
+XCBL.SoapWebService.Phase2/packages/Newtonsoft.Json.13.0.1/packageIcon.png
