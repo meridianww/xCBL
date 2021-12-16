@@ -222,14 +222,64 @@ namespace xCBLSoapWebService
 			return false;
 		}
 
-		#region Async Method implementation
+        /// <summary>
+        /// To upload file to FTP from MeridianResult.
+        /// </summary>
+        private async Task<bool> SendFileToFTP(MeridianResult meridianResult)
+        {
+            if ((meridianResult != null) && !string.IsNullOrWhiteSpace(meridianResult.FileName))
+            {
+                try
+                {
+                    FtpWebRequest ftpRequest = (FtpWebRequest)FtpWebRequest.Create(meridianResult.FtpServerInFolderPath + meridianResult.FileName);
+                    ftpRequest.Credentials = new NetworkCredential(meridianResult.FtpUserName, meridianResult.FtpPassword);
+                    ftpRequest.Method = WebRequestMethods.Ftp.UploadFile;
+                    ftpRequest.UseBinary = true;
+                    ftpRequest.KeepAlive = false;
+                    ftpRequest.Timeout = Timeout.Infinite;
 
-		/// <summary>
-		/// To get transportion data
-		/// </summary>
-		/// <param name="callback"> delegate that references a method that is called when the asynchronous operation completes </param>
-		/// <param name="asyncState">user-defined object can be used to pass application-specific state information to the method invoked when the asynchronous operation completes </param>
-		public IAsyncResult BeginSubmitDocument(AsyncCallback callback, object asyncState)
+                    if (meridianResult.UploadFromLocalPath)
+                    {
+                        using (StreamReader sourceStream = new StreamReader(meridianResult.LocalFilePath + meridianResult.FileName))
+                            meridianResult.Content = Encoding.UTF8.GetBytes(sourceStream.ReadToEnd());
+                    }
+
+                    using (Stream requestStream = await ftpRequest.GetRequestStreamAsync())
+                    {
+                        requestStream.Write(meridianResult.Content, 0, meridianResult.Content.Length);
+                        requestStream.Flush();
+                    }
+                    using (FtpWebResponse response = (FtpWebResponse)ftpRequest.GetResponse())
+                        if (response.StatusCode == FtpStatusCode.ClosingData)
+                        {
+                            var prefixToTake = meridianResult.IsSchedule ? MeridianGlobalConstants.XCBL_AWC_FILE_PREFIX : MeridianGlobalConstants.XCBL_AWC_REQUISITION_FILE_PREFIX;
+                            MeridianSystemLibrary.LogTransaction(meridianResult.WebUserName, meridianResult.FtpUserName, (prefixToTake + "- Successfully completed request"), "01.06", string.Format("{0} - Successfully completed request for {1}", prefixToTake, meridianResult.UniqueID), string.Format("Uploaded CSV file: {0} on ftp server successfully for {1}", meridianResult.FileName, meridianResult.UniqueID), meridianResult.FileName, meridianResult.UniqueID, meridianResult.OrderNumber, meridianResult.XmlDocument, "Success");
+                            
+                            return true;
+                        }
+                        else
+                        {
+                            MeridianSystemLibrary.LogTransaction(meridianResult.WebUserName, meridianResult.FtpUserName, "UploadFileToFtp", "03.08", "Error - While CSV uploading file - Inside TRY block", string.Format("Error - While uploading CSV file: {0} with error - Inside TRY block - ", meridianResult.FileName), meridianResult.FileName, meridianResult.UniqueID, meridianResult.OrderNumber, null, "Error 03.08 - Upload CSV to PBS");
+                            return false;
+                        }
+                }
+                catch (Exception ex)
+                {
+                    MeridianSystemLibrary.LogTransaction(meridianResult.WebUserName, meridianResult.FtpUserName, "UploadFileToFtp", "03.08", "Error - While CSV uploading file - Inside CATCH block", string.Format("Error - While uploading CSV file: {0} with error {1} - Inside CATCH block - ", meridianResult.FileName, ex.Message), meridianResult.FileName, meridianResult.UniqueID, meridianResult.OrderNumber, null, "Error 03.08 - Upload CSV to PBS");
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        #region Async Method implementation
+
+        /// <summary>
+        /// To get transportion data
+        /// </summary>
+        /// <param name="callback"> delegate that references a method that is called when the asynchronous operation completes </param>
+        /// <param name="asyncState">user-defined object can be used to pass application-specific state information to the method invoked when the asynchronous operation completes </param>
+        public IAsyncResult BeginSubmitDocument(AsyncCallback callback, object asyncState)
 		{
 			var meridianAsyncResult = new MeridianAsyncResult(OperationContext.Current, callback, asyncState);
 			ThreadPool.QueueUserWorkItem(CompleteProcess, meridianAsyncResult);
@@ -249,7 +299,9 @@ namespace xCBLSoapWebService
 					? MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS
 					: MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
 
-			return XElement.Parse(MeridianSystemLibrary.GetMeridian_Status(meridianAsyncResult.Result.Status, meridianAsyncResult.Result.UniqueID, meridianAsyncResult.Result.IsSchedule, meridianAsyncResult.Result.IsPastDate));
+            SendFileToFTP(meridianAsyncResult.Result);
+
+            return XElement.Parse(MeridianSystemLibrary.GetMeridian_Status(meridianAsyncResult.Result.Status, meridianAsyncResult.Result.UniqueID, meridianAsyncResult.Result.IsSchedule, meridianAsyncResult.Result.IsPastDate));
 		}
 
 		/// <summary>
