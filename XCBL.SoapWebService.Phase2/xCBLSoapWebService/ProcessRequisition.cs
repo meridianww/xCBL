@@ -52,7 +52,6 @@ namespace xCBLSoapWebService
 					}
 					else
 					{
-						_meridianResult.IsPastDate = true;
 						_meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS;
 					}
 					_meridianResult.UniqueID = processData.RequisitionID;

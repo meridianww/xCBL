@@ -60,8 +60,7 @@ namespace xCBLSoapWebService
 					else
 					{
                         CreateLocalCsvFile(processData);
-
-                        _meridianResult.IsPastDate = true;
+                        
 						_meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS;
 					}
 					_meridianResult.UniqueID = processData.ScheduleID;
