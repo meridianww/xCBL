@@ -53,16 +53,11 @@ namespace xCBLSoapWebService
                     _meridianResult.WebPassword = xCblServiceUser.WebPassword;
                     _meridianResult.WebHashKey = xCblServiceUser.Hashkey;
 
-					if (isRejected)
-					{
-						_meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
-					}
-					else
+					if (!isRejected)
 					{
                         CreateLocalCsvFile(processData);
-                        
-						_meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS;
 					}
+					_meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS;
 					_meridianResult.UniqueID = processData.ScheduleID;
 					return _meridianResult;
 				}
