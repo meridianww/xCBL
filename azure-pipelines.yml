@@ -24,7 +24,7 @@ name: $(Build.SourceBranchName)$(Rev:.r)
 steps:
   - task: oneLuckiDevJson2Variable@1
     inputs:
-      jsonFile: '$(Build.SourcesDirectory)\XCBL.SoapWebService.Phase2\version.json'
+      jsonFile: '$(Build.SourcesDirectory)\XCBL.SoapWebService.Phase2\xCBLSoapWebService\version.json'
       shouldPrefixVariables: false
   - task: PowerShell@2
     inputs:
