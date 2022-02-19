@@ -88,3 +88,7 @@ steps:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)\_PublishedWebsites'
       ArtifactName: 'Websites'
       publishLocation: 'Container'
+  - task: DeleteFiles@1
+    inputs:
+      SourceFolder: '$(Build.ArtifactStagingDirectory\_PublishedWebsites'
+      Contents: 'M4PL.ControlTower.API_Package'
