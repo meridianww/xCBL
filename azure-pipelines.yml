@@ -22,20 +22,69 @@ variables:
 name: $(Build.SourceBranchName)$(Rev:.r)
 
 steps:
-- task: NuGetToolInstaller@1
+  - task: oneLuckiDevJson2Variable@1
+    inputs:
+      jsonFile: '$(Build.SourcesDirectory)\M4PL\M4PL.API\version.json'
+      shouldPrefixVariables: false
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      script: |
+        $lastIndex = '$(Build.BuildNumber)'.LastIndexOf('.')
+        Write-Host $env:version
+        Write-Host '$(Build.BuildNumber)'.substring($lastIndex)
+        $jsonVersion = $env:version + '$(Build.BuildNumber)'.substring($lastIndex)
+        Write-Host $jsonVersion
+        Write-Host "##vso[task.setvariable variable=version;]$jsonVersion"
+  - task: BuildVersioning@0
+    inputs:
+      sourcePath: '$(build.SourcesDirectory)'
+      versionSource: 'variable'
+      customNumberVariable: 'version'
+      paramAssemblyVersion: '4'
+      paramAssemblyFileVersion: '4'
+      paramAssemblyInformationalVersion: '4'
+      paramOverwriteFourthDigitWithBuildCounter: false
+      paramVersionCode: '2'
+      doAssemblyInfoAppendSuffix: false
+      doConvertAssemblyInfoToLowerCase: false
+      buildNumberVersionFormat: '3'
+      buildNumberAction: 'nothing'
+      doReplaceAssemblyInfo: true
+      filePatternAssemblyInfo: '**\AssemblyInfo.*'
+      doReplaceNuspec: false
+      doReplaceNpm: false
+      doReplaceDotNetCore: false
+      doReplaceAndroid: false
+      doReplaceiOS: false
+      doReplaceCustom: true
+      filePatternCustom: '**\*.sqlproj'
+      paramCustomSearchRegex: '(<DacVersion>)(\d+\.\d+\.\d+(?:\.\d+)?)(</DacVersion>)'
+      paramCustomReplaceRegex: '$1$(version)$3'
+      doShowWarningsForUnmatchedRegex: true
+      excludeFilePattern: |
+        !**/bin/**
+        !**/obj/**
+        !**/node_modules/**
+        !**/packages/**
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+  - task: NuGetToolInstaller@1
 
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  - task: NuGetCommand@2
+    inputs:
+      restoreSolution: '$(solution)'
 
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+  - task: VSBuild@1
+    inputs:
+      solution: '$(build.SourcesDirectory)\XCBL.SoapWebService.Phase2\xCBLSoapWebService.sln'
+      msbuildArgs: '/p:outdir=$(Build.ArtifactStagingDirectory) /p:DeployOnBuild=true'
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
+      clean: true
+      msbuildArchitecture: 'x64'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)\_PublishedWebsites'
+      ArtifactName: 'Websites'
+      publishLocation: 'Container'
