@@ -83,12 +83,6 @@ steps:
       clean: true
       msbuildArchitecture: 'x64'
 
-  - task: CopyFiles@2
-    inputs:
-      SourceFolder: '$(Build.SourcesDirectory)\XCBL.SoapWebService.Phase2\xCBLSoapWebService'
-      Contents: '*.config'
-      TargetFolder: '(Build.ArtifactStagingDirectory)\_PublishedWebsites\xCBLSoapWebService'
-
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)\_PublishedWebsites'
