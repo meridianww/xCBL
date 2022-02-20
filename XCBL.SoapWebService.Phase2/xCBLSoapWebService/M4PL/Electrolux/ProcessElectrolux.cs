@@ -57,8 +57,8 @@ namespace xCBLSoapWebService.M4PL.Electrolux
 						string Password = ConfigurationManager.AppSettings["Electrolux_xCBL_Password"];
 						string Username = ConfigurationManager.AppSettings["Electrolux_xCBL_Username"];
 						string prodUrl = ConfigurationManager.AppSettings["M4PLProdAPI"];
-						string devUrl = ConfigurationManager.AppSettings["M4PLDevUrl"];
-						string scannerUrl = ConfigurationManager.AppSettings["M4PLScannerAPI"];
+						//string devUrl = ConfigurationManager.AppSettings["M4PLDevUrl"];
+						//string scannerUrl = ConfigurationManager.AppSettings["M4PLScannerAPI"];
 
 						if (!string.IsNullOrEmpty(prodUrl))
 						{
@@ -72,31 +72,31 @@ namespace xCBLSoapWebService.M4PL.Electrolux
 									catch { }
 								}));
 						}
-						if (!string.IsNullOrEmpty(devUrl))
-						{
-							tasks.Add(
-							   Task.Factory.StartNew(() =>
-							   {
-								   try
-								   {
-									   M4PL.M4PLService.CallM4PLAPI<List<OrderResponseResult>>(electroluxOrderDetails, "XCBL/Electrolux/OrderRequest", isElectrolux: true, baseUrl: ConfigurationManager.AppSettings["M4PLDevUrl"], clientId: ClientId, userName: Username, Password: Password);
-								   }
-								   catch { }
-							   }));
-						}
+						//if (!string.IsNullOrEmpty(devUrl))
+						//{
+						//	tasks.Add(
+						//	   Task.Factory.StartNew(() =>
+						//	   {
+						//		   try
+						//		   {
+						//			   M4PL.M4PLService.CallM4PLAPI<List<OrderResponseResult>>(electroluxOrderDetails, "XCBL/Electrolux/OrderRequest", isElectrolux: true, baseUrl: ConfigurationManager.AppSettings["M4PLDevUrl"], clientId: ClientId, userName: Username, Password: Password);
+						//		   }
+						//		   catch { }
+						//	   }));
+						//}
 
-						if (!string.IsNullOrEmpty(scannerUrl))
-						{
-							tasks.Add(
-							   Task.Factory.StartNew(() =>
-							   {
-								   try
-								   {
-									   M4PL.M4PLService.CallM4PLAPI<List<OrderResponseResult>>(electroluxOrderDetails, "XCBL/Electrolux/OrderRequest", isElectrolux: true, baseUrl: ConfigurationManager.AppSettings["M4PLScannerAPI"], clientId: ClientId, userName: Username, Password: Password);
-								   }
-								   catch { }
-							   }));
-						}
+						//if (!string.IsNullOrEmpty(scannerUrl))
+						//{
+						//	tasks.Add(
+						//	   Task.Factory.StartNew(() =>
+						//	   {
+						//		   try
+						//		   {
+						//			   M4PL.M4PLService.CallM4PLAPI<List<OrderResponseResult>>(electroluxOrderDetails, "XCBL/Electrolux/OrderRequest", isElectrolux: true, baseUrl: ConfigurationManager.AppSettings["M4PLScannerAPI"], clientId: ClientId, userName: Username, Password: Password);
+						//		   }
+						//		   catch { }
+						//	   }));
+						//}
 						Task.WaitAll(tasks.ToArray());
 						if (response != null)
 						{
