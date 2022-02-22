@@ -642,7 +642,7 @@ namespace xCBLSoapWebService
 			}
 			catch (Exception ex)
 			{
-				MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "UseM4PLServiceDataAndUpdateFlags", "03.13", "Error - Something went wrong", $"Exception - {ex.Message}", processData.CsvFileName, processData.ScheduleID, processData.OrderNumber, null, "Error 03.13 - M4PL API Call");
+				MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "UseM4PLServiceDataAndUpdateFlags", "03.13", "Error - Something went wrong", $"Exception - {ex.Message}", processData.CsvFileName, processData.ScheduleID, processData.OrderNumber, processData.XmlDocument, "Error 03.13 - M4PL API Call");
 			}
 
 			return result;
