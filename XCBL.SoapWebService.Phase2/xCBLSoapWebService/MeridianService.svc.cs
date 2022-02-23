@@ -203,23 +203,24 @@ namespace xCBLSoapWebService
 		/// </summary>
 		private async Task<bool> SendShippingScheduleResponse(MeridianResult meridianResult)
 		{
-			if ((meridianResult != null) && !string.IsNullOrWhiteSpace(meridianResult.FileName))
+			bool succeeded = false;
+			if (meridianResult != null)
 			{
 				try
 				{
-					var prefixToTake = meridianResult.IsSchedule ? MeridianGlobalConstants.XCBL_AWC_FILE_PREFIX : MeridianGlobalConstants.XCBL_AWC_REQUISITION_FILE_PREFIX;
-					MeridianSystemLibrary.LogTransaction(meridianResult.WebUserName, meridianResult.FtpUserName, (prefixToTake + "- Successfully completed request"), "01.06", string.Format("{0} - Successfully completed request for {1}", prefixToTake, meridianResult.UniqueID), string.Format("Uploaded CSV file: {0} on ftp server successfully for {1}", meridianResult.FileName, meridianResult.UniqueID), meridianResult.FileName, meridianResult.UniqueID, meridianResult.OrderNumber, meridianResult.XmlDocument, "Success");
+					// Commented out because this is being handled in the sendtoftp method called later.
+					//var prefixToTake = meridianResult.IsSchedule ? MeridianGlobalConstants.XCBL_AWC_FILE_PREFIX : MeridianGlobalConstants.XCBL_AWC_REQUISITION_FILE_PREFIX;
+					//MeridianSystemLibrary.LogTransaction(meridianResult.WebUserName, meridianResult.FtpUserName, (prefixToTake + "- Successfully completed request"), "01.06", string.Format("{0} - Successfully completed request for {1}", prefixToTake, meridianResult.UniqueID), string.Format("Uploaded CSV file: {0} on ftp server successfully for {1}", meridianResult.FileName, meridianResult.UniqueID), meridianResult.FileName, meridianResult.UniqueID, meridianResult.OrderNumber, meridianResult.XmlDocument, "Success");
 					if (meridianResult.IsSchedule && MeridianGlobalConstants.CONFIG_AWC_CALL_SSR_REQUEST.Equals(MeridianGlobalConstants.XCBL_YES_FLAG, StringComparison.OrdinalIgnoreCase))
 						CommonProcess.SendShippingScheduleResponseImmediately(meridianResult);
-					return true;
+					succeeded = true;
 				}
 				catch (Exception ex)
 				{
-                   MeridianSystemLibrary.LogTransaction(meridianResult.WebUserName, meridianResult.FtpUserName, "ShippingScheduleResponse", "03.08", "Error - While Sending Shipping Schedule Response - Inside CATCH block", string.Format("Error - While Sending Shipping Schedule Response with error {} - Inside CATCH block - ", ex.Message), meridianResult.FileName, meridianResult.UniqueID, meridianResult.OrderNumber, null, "Error 03.08 - Sneding Shipping Schedule Response");
-					return false;
+                   MeridianSystemLibrary.LogTransaction(meridianResult.WebUserName, meridianResult.FtpUserName, "ShippingScheduleResponse", "03.08", "Error - While Sending Shipping Schedule Response - Inside CATCH block", string.Format("Error - While Sending Shipping Schedule Response with error {0} - Inside CATCH block - ", ex.Message), String.Empty, meridianResult.UniqueID, meridianResult.OrderNumber, null, "Error 03.08 - Sneding Shipping Schedule Response");
 				}
 			}
-			return false;
+			return succeeded;
 		}
 
         /// <summary>
@@ -227,7 +228,7 @@ namespace xCBLSoapWebService
         /// </summary>
         private async Task<bool> SendFileToFTP(MeridianResult meridianResult)
         {
-            if ((meridianResult != null) && !string.IsNullOrWhiteSpace(meridianResult.FileName))
+            if (!string.IsNullOrWhiteSpace(meridianResult?.FileName))
             {
                 try
                 {
@@ -299,7 +300,7 @@ namespace xCBLSoapWebService
 					? MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS
 					: MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
 
-            SendFileToFTP(meridianAsyncResult.Result);
+			SendFileToFTP(meridianAsyncResult.Result);
 
             return XElement.Parse(MeridianSystemLibrary.GetMeridian_Status(meridianAsyncResult.Result.Status, meridianAsyncResult.Result.UniqueID, meridianAsyncResult.Result.IsSchedule, meridianAsyncResult.Result.IsPastDate));
 		}
