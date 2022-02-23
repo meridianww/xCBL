@@ -35,7 +35,7 @@ namespace xCBLSoapWebService
 				bool isRejected = false;
 				ProcessData processData = ProcessRequest(currentOperationContext, xCblServiceUser, out isRejected);
 
-                if (Convert.ToBoolean(ConfigurationManager.AppSettings["EnableXCBLShippingScheduleForAWCToSyncWithM4PL"]))
+                if (Convert.ToBoolean(ConfigurationManager.AppSettings["EnableXCBLShippingScheduleForAWCToSyncWithM4PL"]) && !isRejected)
                 {
                     var response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.ShippingSchedule, Request = processData.ShippingSchedule }, "XCBL/XCBLSummaryHeader");
                 }
