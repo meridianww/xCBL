@@ -30,9 +30,8 @@ namespace xCBLSoapWebService
 			if (CommonProcess.IsAuthenticatedRequest(currentOperationContext, ref xCblServiceUser))
 			{
 				MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername, "IsAuthenticatedRequest", "01.02", "Success - Authenticated request", "Requisition Document Process", "No FileName", "No Requisition ID", "No Order Number", null, "Success");
-				bool isCSVCreationRejected = false;
-				ProcessData processData = ProcessRequisitionRequestAndCreateFiles(currentOperationContext, xCblServiceUser, out isCSVCreationRejected);
-				if (processData == null || string.IsNullOrEmpty(processData.RequisitionID) || string.IsNullOrEmpty(processData.OrderNumber))
+                ProcessData processData = ProcessRequisitionRequestAndCreateFiles(currentOperationContext, xCblServiceUser, out bool isCSVCreationRejected);
+                if (processData == null || string.IsNullOrEmpty(processData.RequisitionID) || string.IsNullOrEmpty(processData.OrderNumber))
 					_meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
 				else
 				{
@@ -154,6 +153,7 @@ namespace xCBLSoapWebService
 					if (!checkIsCSVCreationRejected)
 						MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername, "ProcessRequestAndCreateFiles", "01.03", string.Format("Success - Parsed requested xml for CSV file {0}", processData.RequisitionID), "Requisition Document Process", processData.CsvFileName, processData.RequisitionID, processData.OrderNumber, processData.XmlDocument, "Success");
 
+					checkIsCSVCreationRejected = true;
 					return processData;
 				}
 			}
@@ -287,17 +287,17 @@ namespace xCBLSoapWebService
 					_meridianResult.OrderNumber = processData.OrderNumber;
 					_meridianResult.FileName = processData.CsvFileName;
 
-					if (MeridianGlobalConstants.CONFIG_CREATE_LOCAL_CSV == MeridianGlobalConstants.SHOULD_CREATE_LOCAL_FILE)
-					{
-						if (Convert.ToBoolean(ConfigurationManager.AppSettings["EnableXCBLRequisitionForAWCToSyncWithM4PL"]))
-						{
-							var response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.Requisition, Request = processData.Requisition }, "XCBL/XCBLSummaryHeader");
-						}
-						_meridianResult.UploadFromLocalPath = true;
-						return CommonProcess.CreateFile(csvContent, _meridianResult);
-					}
-					else
-					{
+					//if (MeridianGlobalConstants.CONFIG_CREATE_LOCAL_CSV == MeridianGlobalConstants.SHOULD_CREATE_LOCAL_FILE)
+					//{
+					//	if (Convert.ToBoolean(ConfigurationManager.AppSettings["EnableXCBLRequisitionForAWCToSyncWithM4PL"]))
+					//	{
+					//		var response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.Requisition, Request = processData.Requisition }, "XCBL/XCBLSummaryHeader");
+					//	}
+					//	_meridianResult.UploadFromLocalPath = true;
+					//	return CommonProcess.CreateFile(csvContent, _meridianResult);
+					//}
+					//else
+					//{
 						byte[] content = Encoding.UTF8.GetBytes(csvContent);
 						int length = content.Length;
 
@@ -310,7 +310,7 @@ namespace xCBLSoapWebService
 						{
 							MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "CreateLocalCsvFile", "03.06", ("Error - Creating CSV File because of Stream " + length), string.Format("Error - Creating CSV File {0} with error of Stream", processData.CsvFileName), processData.CsvFileName, processData.RequisitionID, processData.OrderNumber, processData.XmlDocument, "Error 03.06 - Create CSV");
 						}
-					}
+					//}
 				}
 				else
 				{

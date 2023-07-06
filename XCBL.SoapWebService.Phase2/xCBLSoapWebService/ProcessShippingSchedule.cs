@@ -412,13 +412,13 @@ namespace xCBLSoapWebService
                     _meridianResult.OrderNumber = processData.OrderNumber;
                     _meridianResult.FileName = processData.CsvFileName;
 
-                    if (MeridianGlobalConstants.CONFIG_CREATE_LOCAL_CSV == MeridianGlobalConstants.SHOULD_CREATE_LOCAL_FILE)
-                    {
-                        _meridianResult.UploadFromLocalPath = true;
-                        return CommonProcess.CreateFile(csvContent, _meridianResult);
-                    }
-                    else
-                    {
+                    //if (MeridianGlobalConstants.CONFIG_CREATE_LOCAL_CSV == MeridianGlobalConstants.SHOULD_CREATE_LOCAL_FILE)
+                    //{
+                    //    _meridianResult.UploadFromLocalPath = true;
+                    //    return CommonProcess.CreateFile(csvContent, _meridianResult);
+                    //}
+                    //else
+                    //{
                         byte[] content = Encoding.UTF8.GetBytes(csvContent);
                         int length = content.Length;
 
@@ -431,7 +431,7 @@ namespace xCBLSoapWebService
                         {
                             MeridianSystemLibrary.LogTransaction(processData.WebUserName, processData.FtpUserName, "CreateLocalCsvFile", "03.06", ("Error - Creating CSV File because of Stream " + length), string.Format("Error - Creating CSV File {0} with error of Stream", processData.CsvFileName), processData.CsvFileName, processData.ScheduleID, processData.OrderNumber, processData.XmlDocument, "Error 03.06- Create CSV");
                         }
-                    }
+                    //}
                 }
                 else
                 {
