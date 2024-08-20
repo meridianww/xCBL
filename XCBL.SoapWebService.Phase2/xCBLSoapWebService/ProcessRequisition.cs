@@ -26,11 +26,18 @@ namespace xCBLSoapWebService
 			_meridianResult.IsSchedule = false;
 			_meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_SUCCESS;
 			XCBL_User xCblServiceUser = new XCBL_User();
-			MeridianSystemLibrary.LogTransaction("No WebUser", "No FTPUser", "ProcessRequisitionDocument", "01.01", "Success - New SOAP Request Received", "Requisition Document Process", "No FileName", "No Requisition ID", "No Order Number", null, "Success");
+            bool isRejected = false;
+            MeridianSystemLibrary.LogTransaction("No WebUser", "No FTPUser", "ProcessRequisitionDocument", "01.01", "Success - New SOAP Request Received", "Requisition Document Process", "No FileName", "No Requisition ID", "No Order Number", null, "Success");
 			if (CommonProcess.IsAuthenticatedRequest(currentOperationContext, ref xCblServiceUser))
 			{
 				MeridianSystemLibrary.LogTransaction(xCblServiceUser.WebUsername, xCblServiceUser.FtpUsername, "IsAuthenticatedRequest", "01.02", "Success - Authenticated request", "Requisition Document Process", "No FileName", "No Requisition ID", "No Order Number", null, "Success");
                 ProcessData processData = ProcessRequisitionRequestAndCreateFiles(currentOperationContext, xCblServiceUser, out bool isCSVCreationRejected);
+
+                if (Convert.ToBoolean(ConfigurationManager.AppSettings["EnableXCBLShippingScheduleForAWCToSyncWithM4PL"])) // Check if IsRejected required for Requisition
+                {
+                    var response = M4PL.M4PLService.CallM4PLAPI<List<long>>(new XCBLToM4PLRequest() { EntityId = (int)XCBLRequestType.Requisition, Request = processData.Requisition }, "XCBL/XCBLSummaryHeader");
+                }
+
                 if (processData == null || string.IsNullOrEmpty(processData.RequisitionID) || string.IsNullOrEmpty(processData.OrderNumber))
 					_meridianResult.Status = MeridianGlobalConstants.MESSAGE_ACKNOWLEDGEMENT_FAILURE;
 				else
